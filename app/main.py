@@ -9,7 +9,7 @@ from app.config import get_settings
 from app.database.session import engine
 from app.models.models import Base
 from app.api.routes import router
-from app.services.collector import run_collection, run_pipeline
+from app.services.collector import run_collection, run_pipeline, run_trend_engine
 
 logging.basicConfig(
     level=logging.INFO,
@@ -41,9 +41,16 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         id="metrics_pipeline",
         replace_existing=True,
     )
+    scheduler.add_job(
+        run_trend_engine,
+        "interval",
+        hours=24,
+        id="trend_engine",
+        replace_existing=True,
+    )
     scheduler.start()
     logger.info(
-        "Scheduler started — collecting every %d hours, pipeline daily.",
+        "Scheduler started — collecting every %d hours, pipeline & trend engine daily.",
         settings.collection_interval_hours,
     )
 

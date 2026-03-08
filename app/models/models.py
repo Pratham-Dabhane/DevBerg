@@ -74,6 +74,22 @@ class TechnologyMetrics(Base):
     )
 
 
+class TechnologyPrediction(Base):
+    __tablename__ = "technology_predictions"
+
+    id: int = Column(Integer, primary_key=True, autoincrement=True)
+    technology: str = Column(String(100), nullable=False, index=True)
+    predicted_growth: float = Column(Float, nullable=False, default=0.0)
+    confidence_score: float = Column(Float, nullable=False, default=0.0)
+    trend_direction: str = Column(String(10), nullable=False, default="stable")  # up/down/stable
+    momentum_score: float = Column(Float, nullable=False, default=0.0)
+    is_emerging: bool = Column(Integer, nullable=False, default=0)  # anomaly flag
+    forecast_horizon_months: int = Column(Integer, nullable=False, default=6)
+    created_at: datetime = Column(
+        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc)
+    )
+
+
 class TechMention(Base):
     __tablename__ = "tech_mentions"
 

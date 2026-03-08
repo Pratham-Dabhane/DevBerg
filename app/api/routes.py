@@ -3,19 +3,21 @@ from sqlalchemy.orm import Session
 from sqlalchemy import desc
 
 from app.database.session import get_db
-from app.models.models import Repository, StackOverflowStats, HackerNewsMention, TechMention, TechnologyMetrics
+from app.models.models import Repository, StackOverflowStats, HackerNewsMention, TechMention, TechnologyMetrics, TechnologyPrediction
 from app.models.schemas import (
     RepositorySchema,
     StackOverflowStatsSchema,
     HackerNewsMentionSchema,
     TechMentionSchema,
     TechnologyMetricsSchema,
+    TechnologyPredictionSchema,
     CollectionStatusSchema,
 )
 from app.services.github_service import GitHubService
 from app.services.stackoverflow_service import StackOverflowService
 from app.services.hackernews_service import HackerNewsService
 from app.pipeline.metrics_pipeline import MetricsPipeline
+from app.ml.trend_engine import TrendEngine
 
 router = APIRouter(prefix="/api/v1", tags=["ecosystem"])
 
@@ -176,3 +178,87 @@ def trigger_pipeline(db: Session = Depends(get_db)) -> dict[str, str]:
         "status": "success",
         "message": f"Pipeline processed {len(results)} technologies",
     }
+
+
+# ── Trend detection & predictions ───────────────────────────────
+
+@router.post("/predictions/run", response_model=CollectionStatusSchema)
+def trigger_trend_engine(db: Session = Depends(get_db)) -> dict[str, str]:
+    engine = TrendEngine(db)
+    results = engine.run()
+    return {
+        "status": "success",
+        "message": f"Generated {len(results)} technology predictions",
+    }
+
+
+@router.get("/predictions", response_model=list[TechnologyPredictionSchema])
+def list_predictions(
+    technology: str | None = None,
+    trend: str | None = None,
+    limit: int = Query(default=50, ge=1, le=500),
+    db: Session = Depends(get_db),
+) -> list[TechnologyPrediction]:
+    query = db.query(TechnologyPrediction).order_by(desc(TechnologyPrediction.created_at))
+    if technology:
+        query = query.filter(TechnologyPrediction.technology.ilike(technology))
+    if trend:
+        query = query.filter(TechnologyPrediction.trend_direction.ilike(trend))
+    return query.limit(limit).all()
+
+
+@router.get("/predictions/latest", response_model=list[TechnologyPredictionSchema])
+def list_latest_predictions(
+    db: Session = Depends(get_db),
+) -> list[TechnologyPrediction]:
+    """Return the most recent prediction per technology, ranked by momentum."""
+    from sqlalchemy import func
+
+    subq = (
+        db.query(
+            TechnologyPrediction.technology,
+            func.max(TechnologyPrediction.created_at).label("max_created"),
+        )
+        .group_by(TechnologyPrediction.technology)
+        .subquery()
+    )
+    rows = (
+        db.query(TechnologyPrediction)
+        .join(
+            subq,
+            (TechnologyPrediction.technology == subq.c.technology)
+            & (TechnologyPrediction.created_at == subq.c.max_created),
+        )
+        .order_by(desc(TechnologyPrediction.momentum_score))
+        .all()
+    )
+    return rows
+
+
+@router.get("/predictions/emerging", response_model=list[TechnologyPredictionSchema])
+def list_emerging_technologies(
+    db: Session = Depends(get_db),
+) -> list[TechnologyPrediction]:
+    """Return technologies flagged as emerging by anomaly detection."""
+    from sqlalchemy import func
+
+    subq = (
+        db.query(
+            TechnologyPrediction.technology,
+            func.max(TechnologyPrediction.created_at).label("max_created"),
+        )
+        .group_by(TechnologyPrediction.technology)
+        .subquery()
+    )
+    rows = (
+        db.query(TechnologyPrediction)
+        .join(
+            subq,
+            (TechnologyPrediction.technology == subq.c.technology)
+            & (TechnologyPrediction.created_at == subq.c.max_created),
+        )
+        .filter(TechnologyPrediction.is_emerging == 1)
+        .order_by(desc(TechnologyPrediction.predicted_growth))
+        .all()
+    )
+    return rows

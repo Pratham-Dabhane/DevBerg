@@ -52,6 +52,20 @@ class TechMentionSchema(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class TechnologyPredictionSchema(BaseModel):
+    id: int
+    technology: str
+    predicted_growth: float
+    confidence_score: float
+    trend_direction: str
+    momentum_score: float
+    is_emerging: bool
+    forecast_horizon_months: int
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
 class TechnologyMetricsSchema(BaseModel):
     id: int
     technology: str

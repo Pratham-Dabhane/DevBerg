@@ -7,6 +7,7 @@ from app.services.github_service import GitHubService
 from app.services.stackoverflow_service import StackOverflowService
 from app.services.hackernews_service import HackerNewsService
 from app.pipeline.metrics_pipeline import MetricsPipeline
+from app.ml.trend_engine import TrendEngine
 
 logger = logging.getLogger(__name__)
 
@@ -42,5 +43,19 @@ def run_pipeline() -> None:
         logger.info("Scheduled pipeline run completed successfully.")
     except Exception as e:
         logger.error("Pipeline run failed: %s", e)
+    finally:
+        db.close()
+
+
+def run_trend_engine() -> None:
+    """Execute the trend detection engine to generate predictions."""
+    logger.info("Starting scheduled trend engine run...")
+    db: Session = SessionLocal()
+    try:
+        engine = TrendEngine(db)
+        engine.run()
+        logger.info("Scheduled trend engine run completed successfully.")
+    except Exception as e:
+        logger.error("Trend engine run failed: %s", e)
     finally:
         db.close()

@@ -9,6 +9,7 @@ from app.config import get_settings
 from app.database.session import engine
 from app.models.models import Base
 from app.api.routes import router
+from app.api.insights_routes import router as insights_router
 from app.services.collector import run_collection, run_pipeline, run_trend_engine
 
 logging.basicConfig(
@@ -69,6 +70,7 @@ app = FastAPI(
 )
 
 app.include_router(router)
+app.include_router(insights_router)
 
 
 @app.get("/health")

@@ -87,3 +87,33 @@ class TechnologyMetricsSchema(BaseModel):
 class CollectionStatusSchema(BaseModel):
     status: str
     message: str
+
+
+# ── Insights schemas ──────────────────────────────────────────────
+
+class HealthReportSchema(BaseModel):
+    technology: str
+    health_score: int
+    risk_level: str
+    maintainer_activity: float
+    release_frequency: float
+    issue_resolution_speed: float
+    contributor_diversity: float
+    insights: list[str]
+
+
+class EmergingTechSchema(BaseModel):
+    rank: int
+    technology: str
+    momentum_score: float
+    predicted_growth: float
+    trend_direction: str
+    signals: list[str]
+
+
+class TrendInsightSchema(BaseModel):
+    technology: str
+    category: str
+    message: str
+    severity: str
+    data: dict = {}

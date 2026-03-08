@@ -117,3 +117,39 @@ class TrendInsightSchema(BaseModel):
     message: str
     severity: str
     data: dict = {}
+
+
+# ── Analytics schemas ─────────────────────────────────────────────
+
+class TechnologyMomentumSchema(BaseModel):
+    id: int
+    technology_name: str
+    momentum_score: float
+    stars_growth: float
+    contributors_growth: float
+    stackoverflow_growth: float
+    hn_mentions: float
+    commit_activity: float
+    timestamp: datetime
+
+    model_config = {"from_attributes": True}
+
+
+class TechnologyLifecycleSchema(BaseModel):
+    id: int
+    technology_name: str
+    lifecycle_stage: str
+    confidence_score: float
+    momentum_score: float
+    timestamp: datetime
+
+    model_config = {"from_attributes": True}
+
+
+class EmergingTechnologySchema(BaseModel):
+    id: int
+    technology_name: str
+    growth_spike_score: float
+    detected_at: datetime
+
+    model_config = {"from_attributes": True}

@@ -9,6 +9,7 @@ export default defineConfig({
     proxy: {
       '/api': 'http://localhost:8000',
       '/insights': 'http://localhost:8000',
+      '/analytics': 'http://localhost:8000',
     },
   },
 })

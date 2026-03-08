@@ -8,6 +8,9 @@ from app.services.stackoverflow_service import StackOverflowService
 from app.services.hackernews_service import HackerNewsService
 from app.pipeline.metrics_pipeline import MetricsPipeline
 from app.ml.trend_engine import TrendEngine
+from app.analytics.momentum_engine import MomentumEngine
+from app.analytics.lifecycle_detector import LifecycleDetector
+from app.analytics.emerging_detector import EmergingDetector
 
 logger = logging.getLogger(__name__)
 
@@ -57,5 +60,20 @@ def run_trend_engine() -> None:
         logger.info("Scheduled trend engine run completed successfully.")
     except Exception as e:
         logger.error("Trend engine run failed: %s", e)
+    finally:
+        db.close()
+
+
+def run_analytics() -> None:
+    """Execute the full analytics pipeline: momentum → lifecycle → emerging."""
+    logger.info("Starting scheduled analytics run...")
+    db: Session = SessionLocal()
+    try:
+        MomentumEngine(db).run()
+        LifecycleDetector(db).run()
+        EmergingDetector(db).run()
+        logger.info("Scheduled analytics run completed successfully.")
+    except Exception as e:
+        logger.error("Analytics run failed: %s", e)
     finally:
         db.close()

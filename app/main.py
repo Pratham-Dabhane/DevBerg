@@ -4,6 +4,7 @@ from typing import AsyncGenerator
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
 from app.database.session import engine
@@ -67,6 +68,13 @@ app = FastAPI(
     description="Collects and serves developer ecosystem data from GitHub, StackOverflow, and HackerNews.",
     version="1.0.0",
     lifespan=lifespan,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(router)

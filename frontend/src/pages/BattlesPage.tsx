@@ -89,7 +89,7 @@ export default function BattlesPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Tech Battles</h1>
-        <p className="text-sm text-gray-500">Head-to-head technology comparison</p>
+        <p className="text-sm text-dp-text-3">Head-to-head technology comparison</p>
       </div>
 
       {/* Selectors */}
@@ -97,7 +97,7 @@ export default function BattlesPage() {
         <select
           value={techA}
           onChange={(e) => setTechA(e.target.value)}
-          className="w-full sm:w-48 rounded-lg border border-gray-800/60 bg-gray-900/50 px-3 py-2 text-sm text-gray-300 outline-none focus:border-blue-500/50"
+          className="w-full sm:w-48 rounded-lg border border-dp-border bg-dp-surface px-3 py-2 text-sm text-dp-text-2 outline-none focus:border-dp-accent/40"
         >
           {availableTechs.map((t) => (
             <option key={t} value={t}>{t}</option>
@@ -105,14 +105,14 @@ export default function BattlesPage() {
         </select>
 
         <div className="flex items-center gap-2">
-          <Swords className="h-5 w-5 text-amber-400" />
-          <span className="text-sm font-semibold text-gray-400">VS</span>
+          <Swords className="h-5 w-5 text-dp-warning" />
+          <span className="text-sm font-semibold text-dp-text-2">VS</span>
         </div>
 
         <select
           value={techB}
           onChange={(e) => setTechB(e.target.value)}
-          className="w-full sm:w-48 rounded-lg border border-gray-800/60 bg-gray-900/50 px-3 py-2 text-sm text-gray-300 outline-none focus:border-blue-500/50"
+          className="w-full sm:w-48 rounded-lg border border-dp-border bg-dp-surface px-3 py-2 text-sm text-dp-text-2 outline-none focus:border-dp-accent/40"
         >
           {availableTechs.map((t) => (
             <option key={t} value={t}>{t}</option>
@@ -125,12 +125,12 @@ export default function BattlesPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="flex items-center justify-center gap-3 rounded-xl border border-amber-500/20 bg-amber-500/5 py-4"
+          className="flex items-center justify-center gap-3 rounded-xl border border-dp-warning/15 bg-dp-warning/5 py-4"
         >
-          <Trophy className="h-5 w-5 text-amber-400" />
+          <Trophy className="h-5 w-5 text-dp-warning" />
           <span className="text-sm font-semibold">
-            <span className="text-amber-400">{winner}</span>
-            <span className="text-gray-400"> wins {Math.max(winsA, winsB)}-{Math.min(winsA, winsB)}</span>
+            <span className="text-dp-warning">{winner}</span>
+            <span className="text-dp-text-2"> wins {Math.max(winsA, winsB)}-{Math.min(winsA, winsB)}</span>
           </span>
         </motion.div>
       )}
@@ -141,23 +141,23 @@ export default function BattlesPage() {
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart data={radarData}>
-                <PolarGrid stroke="#374151" />
-                <PolarAngleAxis dataKey="axis" tick={{ fill: "#9ca3af", fontSize: 11 }} />
+                <PolarGrid stroke="#1E1F27" />
+                <PolarAngleAxis dataKey="axis" tick={{ fill: "#5A5A6E", fontSize: 11 }} />
                 <PolarRadiusAxis tick={false} axisLine={false} />
-                <Radar name={techA} dataKey="a" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.15} strokeWidth={2} />
-                <Radar name={techB} dataKey="b" stroke="#f59e0b" fill="#f59e0b" fillOpacity={0.15} strokeWidth={2} />
+                <Radar name={techA} dataKey="a" stroke="#6BE6C1" fill="#6BE6C1" fillOpacity={0.12} strokeWidth={2} />
+                <Radar name={techB} dataKey="b" stroke="#F0B866" fill="#F0B866" fillOpacity={0.12} strokeWidth={2} />
                 <Tooltip content={<ChartTooltip />} />
               </RadarChart>
             </ResponsiveContainer>
           </div>
           <div className="flex justify-center gap-6 mt-2">
             <div className="flex items-center gap-2 text-xs">
-              <span className="h-2 w-2 rounded-full bg-blue-500" />
-              <span className="text-gray-400">{techA}</span>
+              <span className="h-2 w-2 rounded-full bg-dp-accent" />
+              <span className="text-dp-text-2">{techA}</span>
             </div>
             <div className="flex items-center gap-2 text-xs">
-              <span className="h-2 w-2 rounded-full bg-amber-500" />
-              <span className="text-gray-400">{techB}</span>
+              <span className="h-2 w-2 rounded-full bg-dp-warning" />
+              <span className="text-dp-text-2">{techB}</span>
             </div>
           </div>
         </SectionCard>
@@ -167,12 +167,12 @@ export default function BattlesPage() {
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={comparisonData} barGap={4}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" vertical={false} />
-                <XAxis dataKey="metric" tick={{ fill: "#9ca3af", fontSize: 12 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fill: "#6b7280", fontSize: 11 }} axisLine={false} tickLine={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#1E1F27" vertical={false} />
+                <XAxis dataKey="metric" tick={{ fill: "#5A5A6E", fontSize: 12 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: "#3A3A4A", fontSize: 11 }} axisLine={false} tickLine={false} />
                 <Tooltip content={<ChartTooltip />} />
-                <Bar dataKey={techA} name={techA} fill="#3b82f6" radius={[4, 4, 0, 0]} />
-                <Bar dataKey={techB} name={techB} fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                <Bar dataKey={techA} name={techA} fill="#6BE6C1" radius={[4, 4, 0, 0]} />
+                <Bar dataKey={techB} name={techB} fill="#F0B866" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -183,7 +183,7 @@ export default function BattlesPage() {
       <SectionCard title="Detailed Comparison">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-800/40 text-xs uppercase tracking-wider text-gray-500">
+              <tr className="border-b border-dp-border text-xs uppercase tracking-wider text-dp-text-3">
               <th className="pb-2 text-left">Metric</th>
               <th className="pb-2 text-center">{techA}</th>
               <th className="pb-2 text-center">{techB}</th>
@@ -201,17 +201,17 @@ export default function BattlesPage() {
             ].map((row) => {
               const w = row.a > row.b ? techA : row.b > row.a ? techB : "Tie";
               return (
-                <tr key={row.label} className="border-b border-gray-800/30">
-                  <td className="py-3 text-gray-400">{row.label}</td>
-                  <td className={`py-3 text-center font-medium ${w === techA ? "text-blue-400" : "text-gray-300"}`}>
+                <tr key={row.label} className="border-b border-dp-border/50">
+                  <td className="py-3 text-dp-text-2">{row.label}</td>
+                  <td className={`py-3 text-center font-medium ${w === techA ? "text-dp-accent" : "text-dp-text"}`}>
                     {row.a.toFixed(3)}
                   </td>
-                  <td className={`py-3 text-center font-medium ${w === techB ? "text-amber-400" : "text-gray-300"}`}>
+                  <td className={`py-3 text-center font-medium ${w === techB ? "text-dp-warning" : "text-dp-text"}`}>
                     {row.b.toFixed(3)}
                   </td>
                   <td className="py-3 text-center">
                     {w === "Tie" ? (
-                      <span className="text-xs text-gray-500">Tie</span>
+                      <span className="text-xs text-dp-text-3">Tie</span>
                     ) : (
                       <TechnologyBadge name={w} />
                     )}

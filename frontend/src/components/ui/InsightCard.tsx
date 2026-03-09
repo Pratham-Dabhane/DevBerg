@@ -8,15 +8,15 @@ interface Props {
 }
 
 const severityColors: Record<string, string> = {
-  critical: "border-red-500/30 bg-red-500/5",
-  warning: "border-amber-500/30 bg-amber-500/5",
-  info: "border-blue-500/30 bg-blue-500/5",
+  critical: "border-dp-danger/25 bg-dp-danger/5",
+  warning: "border-dp-warning/25 bg-dp-warning/5",
+  info: "border-dp-secondary/25 bg-dp-secondary/5",
 };
 
 const severityDot: Record<string, string> = {
-  critical: "bg-red-400",
-  warning: "bg-amber-400",
-  info: "bg-blue-400",
+  critical: "bg-dp-danger",
+  warning: "bg-dp-warning",
+  info: "bg-dp-secondary",
 };
 
 export default function InsightCard({ technology, severity, insight, category }: Props) {
@@ -28,10 +28,10 @@ export default function InsightCard({ technology, severity, insight, category }:
     >
       <div className="flex items-center gap-2 mb-2">
         <span className={`h-2 w-2 rounded-full ${severityDot[severity] ?? severityDot.info}`} />
-        <span className="text-sm font-medium text-gray-200">{technology}</span>
-        <span className="ml-auto text-[10px] uppercase tracking-wider text-gray-500 font-medium">{category}</span>
+        <span className="text-sm font-medium text-dp-text">{technology}</span>
+        <span className="ml-auto text-[10px] uppercase tracking-wider text-dp-text-3 font-medium">{category}</span>
       </div>
-      <p className="text-sm text-gray-400 leading-relaxed">{insight}</p>
+      <p className="text-sm text-dp-text-2 leading-relaxed">{insight}</p>
     </motion.div>
   );
 }

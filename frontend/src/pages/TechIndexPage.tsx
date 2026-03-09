@@ -77,19 +77,19 @@ export default function TechIndexPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Technology Market Index</h1>
-        <p className="text-sm text-gray-500">Composite health and growth index across the developer ecosystem</p>
+        <p className="text-sm text-dp-text-3">Composite health and growth index across the developer ecosystem</p>
       </div>
 
       {/* Index headline */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-xl border border-gray-800/60 bg-gradient-to-r from-blue-500/5 to-purple-500/5 p-6 text-center"
+        className="dp-card bg-gradient-to-r from-dp-accent/5 to-dp-secondary/5 p-6 text-center"
       >
-        <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">AI Tech Index</p>
+        <p className="text-xs uppercase tracking-wider text-dp-text-3 mb-1">AI Tech Index</p>
         <p className="text-5xl font-bold tracking-tight">
           {overallIndex}
-          <span className="text-lg text-gray-500 font-normal ml-1">pts</span>
+          <span className="text-lg text-dp-text-3 font-normal ml-1">pts</span>
         </p>
         <TrendIndicator direction="up" value={4.2} className="justify-center mt-2" />
       </motion.div>
@@ -108,15 +108,15 @@ export default function TechIndexPage() {
             <AreaChart data={historyData}>
               <defs>
                 <linearGradient id="indexGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.3} />
-                  <stop offset="100%" stopColor="#3b82f6" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
-              <XAxis dataKey="period" tick={{ fill: "#9ca3af", fontSize: 12 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fill: "#6b7280", fontSize: 11 }} axisLine={false} tickLine={false} />
-              <Tooltip content={<ChartTooltip />} />
-              <Area type="monotone" dataKey="index" stroke="#3b82f6" fill="url(#indexGrad)" strokeWidth={2} />
+                    <stop offset="0%" stopColor="#6BE6C1" stopOpacity={0.25} />
+                    <stop offset="100%" stopColor="#6BE6C1" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#1E1F27" />
+                <XAxis dataKey="period" tick={{ fill: "#5A5A6E", fontSize: 12 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: "#3A3A4A", fontSize: 11 }} axisLine={false} tickLine={false} />
+                <Tooltip content={<ChartTooltip />} />
+                <Area type="monotone" dataKey="index" stroke="#6BE6C1" fill="url(#indexGrad)" strokeWidth={2} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -132,14 +132,14 @@ export default function TechIndexPage() {
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.04 }}
-                className="flex items-center gap-3 rounded-lg bg-emerald-500/5 border border-emerald-500/10 px-4 py-3"
+                className="flex items-center gap-3 rounded-lg bg-dp-accent/5 border border-dp-accent/10 px-4 py-3"
               >
-                <span className="text-xs font-bold text-gray-500 w-5">{i + 1}</span>
+                <span className="text-xs font-bold text-dp-text-3 w-5">{i + 1}</span>
                 <TechnologyBadge name={tech.technology} />
                 <div className="flex-1">
                   <ScoreBar value={tech.composite} className="w-full" />
                 </div>
-                <span className="text-sm font-bold text-emerald-400">{tech.composite.toFixed(1)}</span>
+                <span className="text-sm font-bold text-dp-accent">{tech.composite.toFixed(1)}</span>
               </motion.div>
             ))}
           </div>
@@ -150,7 +150,7 @@ export default function TechIndexPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-800/40 text-xs uppercase tracking-wider text-gray-500">
+                <tr className="border-b border-dp-border text-xs uppercase tracking-wider text-dp-text-3">
                   <th className="pb-2 text-left">Technology</th>
                   <th className="pb-2 text-center">Composite</th>
                   <th className="pb-2 text-center">Momentum</th>
@@ -160,12 +160,12 @@ export default function TechIndexPage() {
               </thead>
               <tbody>
                 {techIndex.map((tech) => (
-                  <tr key={tech.technology} className="border-b border-gray-800/30">
-                    <td className="py-2.5 font-medium text-gray-300">{tech.technology}</td>
-                    <td className="py-2.5 text-center font-bold text-blue-400">{tech.composite.toFixed(1)}</td>
-                    <td className="py-2.5 text-center text-gray-400">{tech.momentum.toFixed(1)}</td>
-                    <td className="py-2.5 text-center text-gray-400">{tech.health.toFixed(1)}</td>
-                    <td className="py-2.5 text-center text-gray-400">{tech.growth.toFixed(1)}</td>
+                  <tr key={tech.technology} className="border-b border-dp-border/50">
+                    <td className="py-2.5 font-medium text-dp-text">{tech.technology}</td>
+                    <td className="py-2.5 text-center font-bold text-dp-accent">{tech.composite.toFixed(1)}</td>
+                    <td className="py-2.5 text-center text-dp-text-2">{tech.momentum.toFixed(1)}</td>
+                    <td className="py-2.5 text-center text-dp-text-2">{tech.health.toFixed(1)}</td>
+                    <td className="py-2.5 text-center text-dp-text-2">{tech.growth.toFixed(1)}</td>
                   </tr>
                 ))}
               </tbody>

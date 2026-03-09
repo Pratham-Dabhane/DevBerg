@@ -1,45 +1,71 @@
 @import "tailwindcss";
 
+/* ── DevPulse AI Design System ── */
+
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --color-brand-400: #60a5fa;
-  --color-brand-500: #3b82f6;
-  --color-brand-600: #2563eb;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* Brand palette */
+  --color-dp-bg: #0B0B0F;
+  --color-dp-surface: #111217;
+  --color-dp-surface-2: #16171D;
+  --color-dp-border: #1E1F27;
+  --color-dp-border-subtle: #16171D;
+
+  --color-dp-accent: #6BE6C1;
+  --color-dp-accent-dim: rgba(107, 230, 193, 0.12);
+  --color-dp-secondary: #7C9BFF;
+  --color-dp-secondary-dim: rgba(124, 155, 255, 0.12);
+
+  --color-dp-text: #F5F5F7;
+  --color-dp-text-2: #A0A0B0;
+  --color-dp-text-3: #5A5A6E;
+  --color-dp-text-4: #3A3A4A;
+
+  --color-dp-danger: #FF6B6B;
+  --color-dp-warning: #FFB86C;
+  --color-dp-success: #6BE6C1;
 }
 
+/* ── Smooth Scrollbar ── */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #272f3d;
-  border-radius: 3px;
+  background: var(--color-dp-border);
+  border-radius: 99px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #374151;
+  background: #2a2b35;
 }
 
-/* Smooth transitions */
-* {
-  scroll-behavior: smooth;
+/* ── Global ── */
+html {
+  scroll-behavior: auto; /* Lenis handles scrolling */
 }
 
-/* Selection */
 ::selection {
-  background: rgba(59, 130, 246, 0.3);
-  color: #e5e7eb;
+  background: rgba(107, 230, 193, 0.2);
+  color: var(--color-dp-text);
 }
 
-/* Input range styling */
+body {
+  background: var(--color-dp-bg);
+  color: var(--color-dp-text);
+}
+
+/* ── Range Input ── */
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
-  height: 4px;
-  background: #374151;
-  border-radius: 2px;
+  height: 3px;
+  background: var(--color-dp-border);
+  border-radius: 99px;
   outline: none;
 }
 
@@ -49,13 +75,19 @@ input[type="range"]::-webkit-slider-thumb {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: #3b82f6;
+  background: var(--color-dp-accent);
   cursor: pointer;
+  box-shadow: 0 0 8px rgba(107, 230, 193, 0.3);
+  transition: box-shadow 200ms;
 }
 
-/* Select styling */
+input[type="range"]::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 14px rgba(107, 230, 193, 0.5);
+}
+
+/* ── Select ── */
 select {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%235A5A6E' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
   background-position: right 0.5rem center;
   background-repeat: no-repeat;
   background-size: 1.5em 1.5em;
@@ -65,6 +97,146 @@ select {
 }
 
 select option {
-  background: #111827;
-  color: #e5e7eb;
+  background: var(--color-dp-surface);
+  color: var(--color-dp-text);
+}
+
+/* ── Skeleton pulse ── */
+@keyframes dp-pulse {
+  0%, 100% { opacity: 0.04; }
+  50% { opacity: 0.08; }
+}
+
+.dp-skeleton {
+  background: linear-gradient(90deg, var(--color-dp-border) 25%, var(--color-dp-surface-2) 50%, var(--color-dp-border) 75%);
+  background-size: 200% 100%;
+  animation: dp-shimmer 1.8s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+@keyframes dp-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Card hover glow ── */
+.dp-card {
+  border: 1px solid var(--color-dp-border);
+  background: var(--color-dp-surface);
+  border-radius: 12px;
+  transition: border-color 280ms ease, box-shadow 280ms ease, transform 280ms ease;
+}
+
+.dp-card:hover {
+  border-color: rgba(107, 230, 193, 0.15);
+  box-shadow: 0 0 20px rgba(107, 230, 193, 0.04), 0 4px 16px rgba(0,0,0,0.3);
+  transform: translateY(-1px);
+}
+
+/* ── Button base ── */
+.dp-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  transition: all 250ms ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.dp-btn-primary {
+  background: var(--color-dp-accent);
+  color: #0B0B0F;
+  border-color: var(--color-dp-accent);
+}
+.dp-btn-primary:hover {
+  box-shadow: 0 0 20px rgba(107, 230, 193, 0.25);
+  transform: translateY(-1px);
+}
+
+.dp-btn-ghost {
+  background: transparent;
+  color: var(--color-dp-text-2);
+  border-color: var(--color-dp-border);
+}
+.dp-btn-ghost:hover {
+  border-color: var(--color-dp-text-3);
+  color: var(--color-dp-text);
+  background: var(--color-dp-surface-2);
+}
+
+/* ── Active nav indicator ── */
+.dp-nav-active {
+  position: relative;
+}
+.dp-nav-active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 20px;
+  background: var(--color-dp-accent);
+  border-radius: 0 4px 4px 0;
+}
+
+/* ── Table styling ── */
+.dp-table th {
+  color: var(--color-dp-text-3);
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+  padding-bottom: 0.625rem;
+  border-bottom: 1px solid var(--color-dp-border);
+}
+
+.dp-table td {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(30, 31, 39, 0.5);
+}
+
+.dp-table tr {
+  transition: background 200ms;
+}
+
+.dp-table tbody tr:hover {
+  background: rgba(22, 23, 29, 0.6);
+}
+
+/* ── Tooltip panel ── */
+.dp-tooltip {
+  background: var(--color-dp-surface) !important;
+  border: 1px solid var(--color-dp-border) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important;
+}
+
+/* ── Recharts overrides ── */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: var(--color-dp-border) !important;
+  stroke-opacity: 0.5;
+}
+
+/* ── Lenis smooth scroll ── */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
 }

@@ -21,7 +21,7 @@ import { SectionCard, ChartTooltip, PageSpinner, PageError } from "../components
 import ScoreBar from "../components/ui/ScoreBar";
 import { useForecast } from "../hooks/useApi";
 
-const COLORS = ["#3b82f6", "#8b5cf6", "#06b6d4", "#22c55e", "#f59e0b"];
+const COLORS = ["#6BE6C1", "#7C9BFF", "#A78BFA", "#F0B866", "#F87171"];
 
 export default function ForecastPage() {
   const { data, isLoading, error } = useForecast();
@@ -77,7 +77,7 @@ export default function ForecastPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Technology Forecast</h1>
-        <p className="text-sm text-gray-500">Multi-horizon growth predictions with ensemble modeling</p>
+        <p className="text-sm text-dp-text-3">Multi-horizon growth predictions with ensemble modeling</p>
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -92,7 +92,7 @@ export default function ForecastPage() {
         <button
           onClick={() => setSelectedTech(null)}
           className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
-            !selectedTech ? "bg-blue-500/15 text-blue-400" : "bg-gray-800/50 text-gray-500 hover:text-gray-300"
+            !selectedTech ? "bg-dp-accent-dim text-dp-accent" : "bg-dp-surface text-dp-text-3 hover:text-dp-text-2"
           }`}
         >
           All
@@ -102,7 +102,7 @@ export default function ForecastPage() {
             key={tech}
             onClick={() => setSelectedTech(selectedTech === tech ? null : tech)}
             className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
-              selectedTech === tech ? "bg-blue-500/15 text-blue-400" : "bg-gray-800/50 text-gray-500 hover:text-gray-300"
+              selectedTech === tech ? "bg-dp-accent-dim text-dp-accent" : "bg-dp-surface text-dp-text-3 hover:text-dp-text-2"
             }`}
           >
             {tech}
@@ -116,9 +116,9 @@ export default function ForecastPage() {
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={barData} layout="vertical" barSize={18}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" horizontal={false} />
-                <XAxis type="number" tick={{ fill: "#6b7280", fontSize: 11 }} axisLine={false} tickLine={false} unit="%" />
-                <YAxis type="category" dataKey="name" tick={{ fill: "#9ca3af", fontSize: 12 }} axisLine={false} tickLine={false} width={90} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#1E1F27" horizontal={false} />
+                <XAxis type="number" tick={{ fill: "#3A3A4A", fontSize: 11 }} axisLine={false} tickLine={false} unit="%" />
+                <YAxis type="category" dataKey="name" tick={{ fill: "#5A5A6E", fontSize: 12 }} axisLine={false} tickLine={false} width={90} />
                 <Tooltip content={<ChartTooltip />} />
                 <Bar dataKey="growth" name="Growth %" radius={[0, 6, 6, 0]}>
                   {barData.map((_, i) => (
@@ -135,9 +135,9 @@ export default function ForecastPage() {
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={horizonData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
-                <XAxis dataKey="horizon" tick={{ fill: "#9ca3af", fontSize: 12 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fill: "#6b7280", fontSize: 11 }} axisLine={false} tickLine={false} unit="%" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#1E1F27" />
+                <XAxis dataKey="horizon" tick={{ fill: "#5A5A6E", fontSize: 12 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: "#3A3A4A", fontSize: 11 }} axisLine={false} tickLine={false} unit="%" />
                 <Tooltip content={<ChartTooltip />} />
                 {(selectedTech ? [selectedTech] : techs).map((tech, i) => (
                   <Area
@@ -165,7 +165,7 @@ export default function ForecastPage() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: gi * 0.05 }}
-            className="rounded-xl border border-gray-800/60 bg-gray-900/30 p-5"
+            className="dp-card p-5"
           >
             <div className="flex items-center justify-between mb-3">
               <TechnologyBadge name={g.technology} />
@@ -174,17 +174,17 @@ export default function ForecastPage() {
             <div className="space-y-3">
               {g.forecasts.map((f) => (
                 <div key={f.horizon_months} className="flex items-center gap-3">
-                  <span className="text-xs text-gray-500 w-8">{f.horizon_months}mo</span>
+                  <span className="text-xs text-dp-text-3 w-8">{f.horizon_months}mo</span>
                   <div className="flex-1">
                     <ScoreBar value={Math.min(Math.abs(f.predicted_growth_pct), 100)} />
                   </div>
-                  <span className={`text-sm font-bold ${f.predicted_growth_pct >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+                  <span className={`text-sm font-bold ${f.predicted_growth_pct >= 0 ? "text-dp-accent" : "text-dp-danger"}`}>
                     {f.predicted_growth_pct >= 0 ? "+" : ""}{f.predicted_growth_pct.toFixed(1)}%
                   </span>
                 </div>
               ))}
             </div>
-            <div className="mt-3 flex items-center gap-2 text-[10px] text-gray-500">
+            <div className="mt-3 flex items-center gap-2 text-[10px] text-dp-text-3">
               <span>Confidence: {(g.forecasts[0]?.confidence_score * 100).toFixed(0)}%</span>
               <span>·</span>
               <span>Models: {g.forecasts[0]?.model_used}</span>

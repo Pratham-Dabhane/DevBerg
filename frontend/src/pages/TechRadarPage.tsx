@@ -16,10 +16,10 @@ const RING_MAP: Record<string, typeof RINGS[number]> = {
 };
 
 const RING_COLORS: Record<string, { bg: string; border: string; text: string }> = {
-  Adopt: { bg: "bg-emerald-500/8", border: "border-emerald-500/20", text: "text-emerald-400" },
-  Trial: { bg: "bg-blue-500/8", border: "border-blue-500/20", text: "text-blue-400" },
-  Assess: { bg: "bg-amber-500/8", border: "border-amber-500/20", text: "text-amber-400" },
-  Hold: { bg: "bg-red-500/8", border: "border-red-500/20", text: "text-red-400" },
+  Adopt: { bg: "bg-dp-accent/8", border: "border-dp-accent/20", text: "text-dp-accent" },
+  Trial: { bg: "bg-dp-secondary/8", border: "border-dp-secondary/20", text: "text-dp-secondary" },
+  Assess: { bg: "bg-dp-warning/8", border: "border-dp-warning/20", text: "text-dp-warning" },
+  Hold: { bg: "bg-dp-danger/8", border: "border-dp-danger/20", text: "text-dp-danger" },
 };
 
 const RING_RADII = [90, 155, 210, 260];
@@ -43,7 +43,7 @@ export default function TechRadarPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Technology Radar</h1>
-        <p className="text-sm text-gray-500">Lifecycle-based technology positioning inspired by ThoughtWorks</p>
+        <p className="text-sm text-dp-text-3">Lifecycle-based technology positioning inspired by ThoughtWorks</p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -59,24 +59,24 @@ export default function TechRadarPage() {
                     cy="280"
                     r={r}
                     fill="none"
-                    stroke="#374151"
+                    stroke="#1E1F27"
                     strokeWidth="1"
                     strokeDasharray="4 4"
-                    opacity={0.5}
+                    opacity={0.7}
                   />
                   <text
                     x="280"
                     y={280 - r + 14}
                     textAnchor="middle"
-                    className="text-[10px] fill-gray-600 font-medium uppercase tracking-wider"
+                    className="text-[10px] fill-dp-text-4 font-medium uppercase tracking-wider"
                   >
                     {RINGS[i]}
                   </text>
                 </g>
               ))}
               {/* Quadrant lines */}
-              <line x1="280" y1="20" x2="280" y2="540" stroke="#374151" strokeWidth="0.5" opacity={0.3} />
-              <line x1="20" y1="280" x2="540" y2="280" stroke="#374151" strokeWidth="0.5" opacity={0.3} />
+              <line x1="280" y1="20" x2="280" y2="540" stroke="#1E1F27" strokeWidth="0.5" opacity={0.4} />
+              <line x1="20" y1="280" x2="540" y2="280" stroke="#1E1F27" strokeWidth="0.5" opacity={0.4} />
 
               {/* Tech nodes */}
               {items.map((tech, idx) => {
@@ -100,7 +100,7 @@ export default function TechRadarPage() {
                       cx={cx}
                       cy={cy}
                       r={isSelected ? 18 : 14}
-                      className={`transition-all duration-200 ${isSelected ? "fill-blue-500/30 stroke-blue-400" : "fill-gray-800/80 stroke-gray-600"}`}
+                      className={`transition-all duration-200 ${isSelected ? "fill-dp-accent/25 stroke-dp-accent" : "fill-dp-surface stroke-dp-border"}`}
                       strokeWidth={isSelected ? 2 : 1}
                     />
                     <text
@@ -108,7 +108,7 @@ export default function TechRadarPage() {
                       y={cy + 1}
                       textAnchor="middle"
                       dominantBaseline="central"
-                      className={`text-[8px] font-semibold pointer-events-none ${isSelected ? "fill-blue-300" : "fill-gray-300"}`}
+                      className={`text-[8px] font-semibold pointer-events-none ${isSelected ? "fill-dp-accent" : "fill-dp-text"}`}
                     >
                       {tech.technology_name.slice(0, 4)}
                     </text>
@@ -116,7 +116,7 @@ export default function TechRadarPage() {
                       x={cx}
                       y={cy + 26}
                       textAnchor="middle"
-                      className="text-[9px] fill-gray-500 pointer-events-none"
+                      className="text-[9px] fill-dp-text-3 pointer-events-none"
                     >
                       {tech.technology_name}
                     </text>
@@ -138,12 +138,12 @@ export default function TechRadarPage() {
               <SectionCard title={selectedTech.technology_name} subtitle={`${selectedTech.lifecycle_stage} Stage`}>
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="rounded-lg bg-gray-800/30 px-3 py-2">
-                      <p className="text-[10px] uppercase text-gray-500">Confidence</p>
+                    <div className="rounded-lg bg-dp-surface-2 px-3 py-2">
+                      <p className="text-[10px] uppercase text-dp-text-3">Confidence</p>
                       <p className="text-lg font-bold">{(selectedTech.confidence_score * 100).toFixed(0)}%</p>
                     </div>
-                    <div className="rounded-lg bg-gray-800/30 px-3 py-2">
-                      <p className="text-[10px] uppercase text-gray-500">Momentum</p>
+                    <div className="rounded-lg bg-dp-surface-2 px-3 py-2">
+                      <p className="text-[10px] uppercase text-dp-text-3">Momentum</p>
                       <p className="text-lg font-bold">{selectedTech.momentum_score.toFixed(2)}</p>
                     </div>
                   </div>
@@ -152,7 +152,7 @@ export default function TechRadarPage() {
             </motion.div>
           ) : (
             <SectionCard title="Select a Technology" subtitle="Click a node on the radar to view details">
-              <p className="text-sm text-gray-500 py-4">Technologies are positioned based on their lifecycle stage and confidence score.</p>
+              <p className="text-sm text-dp-text-3 py-4">Technologies are positioned based on their lifecycle stage and confidence score.</p>
             </SectionCard>
           )}
 

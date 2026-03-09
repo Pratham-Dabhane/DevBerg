@@ -42,7 +42,7 @@ export default function RecommendPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">AI Recommendations</h1>
-        <p className="text-sm text-gray-500">Personalized technology recommendations based on your skill profile</p>
+        <p className="text-sm text-dp-text-3">Personalized technology recommendations based on your skill profile</p>
       </div>
 
       {/* Skill input */}
@@ -57,17 +57,17 @@ export default function RecommendPage() {
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20 px-3 py-1.5 text-sm text-blue-300"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-dp-accent-dim border border-dp-accent/20 px-3 py-1.5 text-sm text-dp-accent"
                 >
                   {skill}
-                  <button onClick={() => removeSkill(skill)} className="hover:text-blue-100">
+                  <button onClick={() => removeSkill(skill)} className="hover:text-dp-text">
                     <X className="h-3 w-3" />
                   </button>
                 </motion.span>
               ))}
             </AnimatePresence>
             {skills.length === 0 && (
-              <p className="text-sm text-gray-600 py-1">No skills added yet. Add some below!</p>
+              <p className="text-sm text-dp-text-4 py-1">No skills added yet. Add some below!</p>
             )}
           </div>
 
@@ -79,11 +79,11 @@ export default function RecommendPage() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && addSkill(inputValue)}
-              className="flex-1 rounded-lg border border-gray-800/60 bg-gray-900/50 px-3 py-2 text-sm text-gray-300 placeholder-gray-600 outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20"
+              className="flex-1 rounded-lg border border-dp-border bg-dp-surface px-3 py-2 text-sm text-dp-text-2 placeholder-dp-text-4 outline-none focus:border-dp-accent/40 focus:ring-1 focus:ring-dp-accent/15"
             />
             <button
               onClick={() => addSkill(inputValue)}
-              className="rounded-lg bg-gray-800 px-3 py-2 text-sm text-gray-300 hover:bg-gray-700 transition-colors"
+              className="rounded-lg bg-dp-surface-2 px-3 py-2 text-sm text-dp-text-2 hover:bg-dp-border transition-colors"
             >
               <Plus className="h-4 w-4" />
             </button>
@@ -91,13 +91,13 @@ export default function RecommendPage() {
 
           {/* Suggestions */}
           <div>
-            <p className="text-xs text-gray-500 mb-2">Quick add:</p>
+            <p className="text-xs text-dp-text-3 mb-2">Quick add:</p>
             <div className="flex flex-wrap gap-1.5">
               {SKILL_SUGGESTIONS.filter((s) => !skills.includes(s)).slice(0, 12).map((s) => (
                 <button
                   key={s}
                   onClick={() => addSkill(s)}
-                  className="rounded-md bg-gray-800/50 px-2 py-1 text-xs text-gray-400 hover:bg-gray-700 hover:text-gray-300 transition-colors"
+                  className="rounded-md bg-dp-surface px-2 py-1 text-xs text-dp-text-2 hover:bg-dp-surface-2 hover:text-dp-text transition-colors"
                 >
                   + {s}
                 </button>
@@ -109,7 +109,7 @@ export default function RecommendPage() {
           <button
             onClick={handleSubmit}
             disabled={skills.length === 0 || recommend.isPending}
-            className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+            className="w-full rounded-lg bg-dp-accent px-4 py-2.5 text-sm font-medium text-dp-bg hover:shadow-[0_0_20px_rgba(107,230,193,0.25)] disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
           >
             <Sparkles className="h-4 w-4" />
             {recommend.isPending ? "Analyzing..." : "Get Recommendations"}
@@ -126,7 +126,7 @@ export default function RecommendPage() {
         <>
           <div className="flex items-center gap-2">
             <h2 className="text-lg font-semibold">Recommended Technologies</h2>
-            <span className="rounded-full bg-blue-500/10 px-2 py-0.5 text-xs text-blue-400">
+            <span className="rounded-full bg-dp-accent-dim px-2 py-0.5 text-xs text-dp-accent">
               {recommendations.length} results
             </span>
           </div>
@@ -138,41 +138,41 @@ export default function RecommendPage() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.06 }}
-                className="rounded-xl border border-gray-800/60 bg-gray-900/30 p-5 hover:border-blue-500/20 transition-colors"
+                className="dp-card p-5 hover:border-dp-accent/15 transition-colors"
               >
                 <div className="flex items-center justify-between mb-3">
                   <TechnologyBadge name={rec.technology_name} />
-                  <span className="text-lg font-bold text-blue-400">
+                  <span className="text-lg font-bold text-dp-accent">
                     {(rec.recommendation_score * 100).toFixed(0)}
-                    <span className="text-xs font-normal text-gray-500">%</span>
+                    <span className="text-xs font-normal text-dp-text-3">%</span>
                   </span>
                 </div>
 
                 <div className="space-y-3">
                   <div>
                     <div className="flex justify-between text-xs mb-1">
-                      <span className="text-gray-500">Match Score</span>
-                      <span className="text-gray-300">{(rec.recommendation_score * 100).toFixed(1)}%</span>
+                      <span className="text-dp-text-3">Match Score</span>
+                      <span className="text-dp-text">{(rec.recommendation_score * 100).toFixed(1)}%</span>
                     </div>
                     <ScoreBar value={rec.recommendation_score * 100} />
                   </div>
 
                   <div className="grid grid-cols-3 gap-2 text-center">
-                    <div className="rounded bg-gray-800/30 px-2 py-1.5">
-                      <p className="text-[10px] text-gray-500">Momentum</p>
+                    <div className="rounded bg-dp-surface-2 px-2 py-1.5">
+                      <p className="text-[10px] text-dp-text-3">Momentum</p>
                       <p className="text-sm font-semibold">{rec.momentum_score.toFixed(2)}</p>
                     </div>
-                    <div className="rounded bg-gray-800/30 px-2 py-1.5">
-                      <p className="text-[10px] text-gray-500">Similarity</p>
+                    <div className="rounded bg-dp-surface-2 px-2 py-1.5">
+                      <p className="text-[10px] text-dp-text-3">Similarity</p>
                       <p className="text-sm font-semibold">{rec.skill_similarity.toFixed(2)}</p>
                     </div>
-                    <div className="rounded bg-gray-800/30 px-2 py-1.5">
-                      <p className="text-[10px] text-gray-500">Proximity</p>
+                    <div className="rounded bg-dp-surface-2 px-2 py-1.5">
+                      <p className="text-[10px] text-dp-text-3">Proximity</p>
                       <p className="text-sm font-semibold">{rec.ecosystem_proximity.toFixed(2)}</p>
                     </div>
                   </div>
 
-                  <p className="text-xs text-gray-400 leading-relaxed">{rec.reason}</p>
+                  <p className="text-xs text-dp-text-2 leading-relaxed">{rec.reason}</p>
                 </div>
               </motion.div>
             ))}

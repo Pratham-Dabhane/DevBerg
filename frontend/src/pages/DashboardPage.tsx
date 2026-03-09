@@ -59,7 +59,7 @@ export default function DashboardPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
-        <p className="text-sm text-gray-500">AI Developer Ecosystem Intelligence Overview</p>
+        <p className="text-sm text-dp-text-3">Developer Ecosystem Intelligence Overview</p>
       </div>
 
       {/* Metric cards */}
@@ -92,13 +92,13 @@ export default function DashboardPage() {
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData} barGap={4}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" vertical={false} />
-                <XAxis dataKey="name" tick={{ fill: "#9ca3af", fontSize: 12 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fill: "#6b7280", fontSize: 11 }} axisLine={false} tickLine={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#1E1F27" vertical={false} />
+                <XAxis dataKey="name" tick={{ fill: "#5A5A6E", fontSize: 12 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: "#3A3A4A", fontSize: 11 }} axisLine={false} tickLine={false} />
                 <Tooltip content={<ChartTooltip />} />
-                <Bar dataKey="momentum" name="Momentum" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="stars" name="Stars Velocity" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="contributors" name="Contributors" fill="#06b6d4" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="momentum" name="Momentum" fill="#6BE6C1" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="stars" name="Stars Velocity" fill="#7C9BFF" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="contributors" name="Contributors" fill="#A78BFA" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -110,15 +110,15 @@ export default function DashboardPage() {
               <AreaChart data={chartData}>
                 <defs>
                   <linearGradient id="momGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.3} />
-                    <stop offset="100%" stopColor="#3b82f6" stopOpacity={0} />
+                    <stop offset="0%" stopColor="#6BE6C1" stopOpacity={0.25} />
+                    <stop offset="100%" stopColor="#6BE6C1" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
-                <XAxis dataKey="name" tick={{ fill: "#9ca3af", fontSize: 12 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fill: "#6b7280", fontSize: 11 }} axisLine={false} tickLine={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#1E1F27" />
+                <XAxis dataKey="name" tick={{ fill: "#5A5A6E", fontSize: 12 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: "#3A3A4A", fontSize: 11 }} axisLine={false} tickLine={false} />
                 <Tooltip content={<ChartTooltip />} />
-                <Area type="monotone" dataKey="momentum" stroke="#3b82f6" fill="url(#momGrad)" strokeWidth={2} />
+                <Area type="monotone" dataKey="momentum" stroke="#6BE6C1" fill="url(#momGrad)" strokeWidth={2} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -138,14 +138,14 @@ export default function DashboardPage() {
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className="flex items-center gap-3 rounded-lg bg-gray-800/30 border border-gray-800/40 px-4 py-3"
+                  className="flex items-center gap-3 rounded-lg bg-dp-surface border border-dp-border px-4 py-3"
                 >
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-500/10 text-xs font-bold text-blue-400">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-dp-accent-dim text-xs font-bold text-dp-accent">
                     {i + 1}
                   </span>
                   <div className="flex-1">
                     <p className="text-sm font-medium">{tech.technology_name}</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-dp-text-3">
                       Growth spike: {tech.growth_spike_score.toFixed(2)}
                     </p>
                   </div>
@@ -153,7 +153,7 @@ export default function DashboardPage() {
                 </motion.div>
               ))}
             {emergingData.length === 0 && (
-              <p className="text-sm text-gray-500 py-4 text-center">No emerging technologies detected</p>
+              <p className="text-sm text-dp-text-3 py-4 text-center">No emerging technologies detected</p>
             )}
           </div>
         </SectionCard>
@@ -170,7 +170,7 @@ export default function DashboardPage() {
               />
             ))}
             {insightData.length === 0 && (
-              <p className="text-sm text-gray-500 py-4 text-center">No insights generated yet</p>
+              <p className="text-sm text-dp-text-3 py-4 text-center">No insights generated yet</p>
             )}
           </div>
         </SectionCard>

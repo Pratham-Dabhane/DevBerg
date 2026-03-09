@@ -25,10 +25,10 @@ import { useRepoHealth } from "../hooks/useApi";
 
 
 const riskColors: Record<string, string> = {
-  Low: "bg-emerald-500/15 text-emerald-400",
-  Moderate: "bg-blue-500/15 text-blue-400",
-  High: "bg-amber-500/15 text-amber-400",
-  Critical: "bg-red-500/15 text-red-400",
+  Low: "bg-dp-accent/10 text-dp-accent",
+  Moderate: "bg-dp-secondary/10 text-dp-secondary",
+  High: "bg-dp-warning/10 text-dp-warning",
+  Critical: "bg-dp-danger/10 text-dp-danger",
 };
 
 export default function RepoHealthPage() {
@@ -68,7 +68,7 @@ export default function RepoHealthPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Repository Health</h1>
-        <p className="text-sm text-gray-500">Comprehensive health diagnostics for tracked repositories</p>
+        <p className="text-sm text-dp-text-3">Comprehensive health diagnostics for tracked repositories</p>
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -86,13 +86,13 @@ export default function RepoHealthPage() {
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} barSize={24}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" vertical={false} />
-              <XAxis dataKey="name" tick={{ fill: "#9ca3af", fontSize: 11 }} axisLine={false} tickLine={false} />
-              <YAxis domain={[0, 100]} tick={{ fill: "#6b7280", fontSize: 11 }} axisLine={false} tickLine={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#1E1F27" vertical={false} />
+              <XAxis dataKey="name" tick={{ fill: "#5A5A6E", fontSize: 11 }} axisLine={false} tickLine={false} />
+              <YAxis domain={[0, 100]} tick={{ fill: "#3A3A4A", fontSize: 11 }} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} />
               <Bar dataKey="score" name="Health Score" radius={[4, 4, 0, 0]}>
                 {chartData.map((d, i) => (
-                  <Cell key={i} fill={d.score >= 70 ? "#22c55e" : d.score >= 40 ? "#f59e0b" : "#ef4444"} />
+                  <Cell key={i} fill={d.score >= 70 ? "#6BE6C1" : d.score >= 40 ? "#FFB86C" : "#FF6B6B"} />
                 ))}
               </Bar>
             </BarChart>
@@ -105,7 +105,7 @@ export default function RepoHealthPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-800/40 text-xs uppercase tracking-wider text-gray-500">
+              <tr className="border-b border-dp-border text-xs uppercase tracking-wider text-dp-text-3">
                 <th className="pb-2 text-left">Repository</th>
                 <th className="pb-2 text-center cursor-pointer select-none" onClick={() => toggleSort("health_score")}>
                   Score {sortCol === "health_score" && (sortAsc ? "↑" : "↓")}
@@ -130,11 +130,11 @@ export default function RepoHealthPage() {
                   animate={{ opacity: 1 }}
                   transition={{ delay: i * 0.03 }}
                   onClick={() => setSelected(selected === h.repository_name ? null : h.repository_name)}
-                  className="border-b border-gray-800/30 hover:bg-gray-800/20 cursor-pointer transition-colors"
+                  className="border-b border-dp-border/50 hover:bg-dp-surface-2 cursor-pointer transition-colors"
                 >
-                  <td className="py-3 font-medium text-gray-200">{h.repository_name}</td>
+                  <td className="py-3 font-medium text-dp-text">{h.repository_name}</td>
                   <td className="py-3 text-center">
-                    <span className={`text-lg font-bold ${h.health_score >= 70 ? "text-emerald-400" : h.health_score >= 40 ? "text-amber-400" : "text-red-400"}`}>
+                    <span className={`text-lg font-bold ${h.health_score >= 70 ? "text-dp-accent" : h.health_score >= 40 ? "text-dp-warning" : "text-dp-danger"}`}>
                       {h.health_score.toFixed(1)}
                     </span>
                   </td>
@@ -143,11 +143,11 @@ export default function RepoHealthPage() {
                       {h.risk_level}
                     </span>
                   </td>
-                  <td className="py-3 text-center text-gray-300">{h.maintainer_activity.toFixed(1)}</td>
-                  <td className="py-3 text-center text-gray-400 hidden md:table-cell">{h.issue_resolution_speed.toFixed(1)}</td>
-                  <td className="py-3 text-center text-gray-400 hidden md:table-cell">{h.contributors}</td>
-                  <td className="py-3 text-center text-gray-400 hidden lg:table-cell">{h.release_frequency.toFixed(1)}</td>
-                  <td className="py-3 text-center text-gray-400 hidden lg:table-cell">{h.commit_frequency.toFixed(1)}</td>
+                  <td className="py-3 text-center text-dp-text">{h.maintainer_activity.toFixed(1)}</td>
+                  <td className="py-3 text-center text-dp-text-2 hidden md:table-cell">{h.issue_resolution_speed.toFixed(1)}</td>
+                  <td className="py-3 text-center text-dp-text-2 hidden md:table-cell">{h.contributors}</td>
+                  <td className="py-3 text-center text-dp-text-2 hidden lg:table-cell">{h.release_frequency.toFixed(1)}</td>
+                  <td className="py-3 text-center text-dp-text-2 hidden lg:table-cell">{h.commit_frequency.toFixed(1)}</td>
                 </motion.tr>
               ))}
             </tbody>
@@ -170,7 +170,7 @@ export default function RepoHealthPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-2xl rounded-xl border border-gray-800/60 bg-gray-950 p-6 shadow-2xl"
+              className="w-full max-w-2xl rounded-xl border border-dp-border bg-dp-bg p-6 shadow-2xl"
             >
               <div className="flex items-center justify-between mb-6">
                 <div>
@@ -179,17 +179,17 @@ export default function RepoHealthPage() {
                     {selectedItem.risk_level} Risk
                   </span>
                 </div>
-                <button onClick={() => setSelected(null)} className="text-gray-400 hover:text-gray-200">
+                <button onClick={() => setSelected(null)} className="text-dp-text-3 hover:text-dp-text">
                   <X className="h-5 w-5" />
                 </button>
               </div>
 
               {/* Health gauge */}
               <div className="text-center mb-6">
-                <p className={`text-5xl font-bold ${selectedItem.health_score >= 70 ? "text-emerald-400" : selectedItem.health_score >= 40 ? "text-amber-400" : "text-red-400"}`}>
+                <p className={`text-5xl font-bold ${selectedItem.health_score >= 70 ? "text-dp-accent" : selectedItem.health_score >= 40 ? "text-dp-warning" : "text-dp-danger"}`}>
                   {selectedItem.health_score.toFixed(1)}
                 </p>
-                <p className="text-xs text-gray-500 mt-1">Health Score / 100</p>
+                <p className="text-xs text-dp-text-3 mt-1">Health Score / 100</p>
               </div>
 
               {/* Radar */}
@@ -202,10 +202,10 @@ export default function RepoHealthPage() {
                     { axis: "Releases", value: selectedItem.release_frequency },
                     { axis: "Commits", value: selectedItem.commit_frequency },
                   ]}>
-                    <PolarGrid stroke="#374151" />
-                    <PolarAngleAxis dataKey="axis" tick={{ fill: "#9ca3af", fontSize: 11 }} />
+                    <PolarGrid stroke="#1E1F27" />
+                    <PolarAngleAxis dataKey="axis" tick={{ fill: "#5A5A6E", fontSize: 11 }} />
                     <PolarRadiusAxis tick={false} axisLine={false} />
-                    <Radar dataKey="value" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.2} strokeWidth={2} />
+                    <Radar dataKey="value" stroke="#6BE6C1" fill="#6BE6C1" fillOpacity={0.15} strokeWidth={2} />
                   </RadarChart>
                 </ResponsiveContainer>
               </div>
@@ -220,8 +220,8 @@ export default function RepoHealthPage() {
                 ].map((item) => (
                   <div key={item.label}>
                     <div className="flex justify-between text-xs mb-1">
-                      <span className="text-gray-400">{item.label}</span>
-                      <span className="text-gray-300">{item.value.toFixed(1)}</span>
+                      <span className="text-dp-text-2">{item.label}</span>
+                      <span className="text-dp-text">{item.value.toFixed(1)}</span>
                     </div>
                     <ScoreBar value={item.value} max={item.max} />
                   </div>

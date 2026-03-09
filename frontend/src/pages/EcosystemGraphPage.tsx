@@ -8,14 +8,14 @@ import ScoreBar from "../components/ui/ScoreBar";
 import { useGraphNetwork, useGraphInfluence, useGraphClusters } from "../hooks/useApi";
 
 const ECOSYSTEM_COLORS: Record<string, string> = {
-  "AI Ecosystem": "#8b5cf6",
-  "Backend Ecosystem": "#3b82f6",
-  "Systems Ecosystem": "#f59e0b",
-  "Frontend Ecosystem": "#06b6d4",
-  "DevOps Ecosystem": "#22c55e",
-  "Database Ecosystem": "#ef4444",
-  "Data Ecosystem": "#ec4899",
-  "Mobile Ecosystem": "#14b8a6",
+  "AI Ecosystem": "#A78BFA",
+  "Backend Ecosystem": "#6BE6C1",
+  "Systems Ecosystem": "#F0B866",
+  "Frontend Ecosystem": "#7C9BFF",
+  "DevOps Ecosystem": "#34D399",
+  "Database Ecosystem": "#F87171",
+  "Data Ecosystem": "#F472B6",
+  "Mobile Ecosystem": "#2DD4BF",
 };
 
 export default function EcosystemGraphPage() {
@@ -54,10 +54,10 @@ export default function EcosystemGraphPage() {
             selector: "node",
             style: {
               label: "data(label)",
-              "background-color": (ele: any) => ECOSYSTEM_COLORS[ele.data("cluster_label")] ?? "#6b7280",
+              "background-color": (ele: any) => ECOSYSTEM_COLORS[ele.data("cluster_label")] ?? "#5A5A6E",
               "border-width": 2,
-              "border-color": "#1f2937",
-              color: "#e5e7eb",
+              "border-color": "#1E1F27",
+              color: "#F5F5F7",
               "font-size": "10px",
               "text-valign": "bottom",
               "text-margin-y": 6,
@@ -69,17 +69,17 @@ export default function EcosystemGraphPage() {
             selector: "edge",
             style: {
               width: 1.5,
-              "line-color": "#374151",
+              "line-color": "#1E1F27",
               "curve-style": "bezier",
               "target-arrow-shape": "triangle",
-              "target-arrow-color": "#374151",
+              "target-arrow-color": "#1E1F27",
               "arrow-scale": 0.6,
             } as any,
           },
           {
             selector: "node:selected",
             style: {
-              "border-color": "#3b82f6",
+              "border-color": "#6BE6C1",
               "border-width": 3,
             } as any,
           },
@@ -121,7 +121,7 @@ export default function EcosystemGraphPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Technology Ecosystem Graph</h1>
-        <p className="text-sm text-gray-500">Interactive dependency and influence network</p>
+        <p className="text-sm text-dp-text-3">Interactive dependency and influence network</p>
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -137,7 +137,7 @@ export default function EcosystemGraphPage() {
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Graph */}
         <SectionCard title="Network Graph" subtitle="Click nodes to inspect" className="lg:col-span-2">
-          <div ref={containerRef} className="h-[500px] rounded-lg bg-gray-900/50" />
+          <div ref={containerRef} className="h-[500px] rounded-lg bg-dp-surface" />
         </SectionCard>
 
         {/* Side panel */}
@@ -159,8 +159,8 @@ export default function EcosystemGraphPage() {
                   ].map((m) => (
                     <div key={m.label}>
                       <div className="flex justify-between text-xs mb-1">
-                        <span className="text-gray-400">{m.label}</span>
-                        <span className="text-gray-300">{m.value.toFixed(4)}</span>
+                        <span className="text-dp-text-2">{m.label}</span>
+                        <span className="text-dp-text">{m.value.toFixed(4)}</span>
                       </div>
                       <ScoreBar value={m.value * 100} />
                     </div>
@@ -170,7 +170,7 @@ export default function EcosystemGraphPage() {
             </motion.div>
           ) : (
             <SectionCard title="Node Details" subtitle="Click a node to view metrics">
-              <p className="text-sm text-gray-500 py-4">Interact with the graph to explore technology influences.</p>
+              <p className="text-sm text-dp-text-3 py-4">Interact with the graph to explore technology influences.</p>
             </SectionCard>
           )}
 
@@ -178,8 +178,8 @@ export default function EcosystemGraphPage() {
           <SectionCard title="Clusters" subtitle={`${clusterData.length} communities detected`}>
             <div className="space-y-2 max-h-64 overflow-y-auto">
               {clusterData.map((c) => (
-                <div key={c.cluster_id} className="rounded-lg border border-gray-800/40 bg-gray-800/20 px-3 py-2">
-                  <p className="text-xs font-semibold text-gray-300 mb-1">{c.cluster_label}</p>
+                <div key={c.cluster_id} className="rounded-lg border border-dp-border bg-dp-surface-2 px-3 py-2">
+                  <p className="text-xs font-semibold text-dp-text mb-1">{c.cluster_label}</p>
                   <div className="flex flex-wrap gap-1">
                     {c.technologies.map((t) => (
                       <TechnologyBadge key={t} name={t} />
@@ -196,12 +196,12 @@ export default function EcosystemGraphPage() {
               {influenceData.slice(0, 10).map((inf, i) => (
                 <div
                   key={inf.technology_name}
-                  className="flex items-center gap-2 text-sm cursor-pointer hover:bg-gray-800/30 rounded px-2 py-1 transition-colors"
+                  className="flex items-center gap-2 text-sm cursor-pointer hover:bg-dp-surface-2 rounded px-2 py-1 transition-colors"
                   onClick={() => setSelectedNode(inf.technology_name)}
                 >
-                  <span className="text-xs font-bold text-gray-500 w-5">{i + 1}</span>
-                  <span className="text-gray-300 flex-1">{inf.technology_name}</span>
-                  <span className="text-xs text-blue-400">{inf.ecosystem_influence.toFixed(3)}</span>
+                  <span className="text-xs font-bold text-dp-text-3 w-5">{i + 1}</span>
+                  <span className="text-dp-text flex-1">{inf.technology_name}</span>
+                  <span className="text-xs text-dp-accent">{inf.ecosystem_influence.toFixed(3)}</span>
                 </div>
               ))}
             </div>
@@ -215,7 +215,7 @@ export default function EcosystemGraphPage() {
           {Object.entries(ECOSYSTEM_COLORS).map(([eco, color]) => (
             <div key={eco} className="flex items-center gap-2">
               <span className="h-3 w-3 rounded-full" style={{ backgroundColor: color }} />
-              <span className="text-xs text-gray-400 capitalize">{eco.replace("_", " / ")}</span>
+              <span className="text-xs text-dp-text-2 capitalize">{eco.replace("_", " / ")}</span>
             </div>
           ))}
         </div>

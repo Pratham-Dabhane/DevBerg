@@ -9,7 +9,7 @@ interface Props {
 export default function TrendIndicator({ direction, value, className = "" }: Props) {
   if (direction === "up" || direction === "accelerating") {
     return (
-      <span className={`inline-flex items-center gap-1 text-emerald-400 ${className}`}>
+      <span className={`inline-flex items-center gap-1 text-dp-accent ${className}`}>
         <TrendingUp className="h-3.5 w-3.5" />
         {value !== undefined && <span className="text-xs font-medium">+{value.toFixed(1)}%</span>}
       </span>
@@ -17,14 +17,14 @@ export default function TrendIndicator({ direction, value, className = "" }: Pro
   }
   if (direction === "down" || direction === "declining" || direction === "decelerating") {
     return (
-      <span className={`inline-flex items-center gap-1 text-red-400 ${className}`}>
+      <span className={`inline-flex items-center gap-1 text-dp-danger ${className}`}>
         <TrendingDown className="h-3.5 w-3.5" />
         {value !== undefined && <span className="text-xs font-medium">{value.toFixed(1)}%</span>}
       </span>
     );
   }
   return (
-    <span className={`inline-flex items-center gap-1 text-gray-500 ${className}`}>
+    <span className={`inline-flex items-center gap-1 text-dp-text-3 ${className}`}>
       <Minus className="h-3.5 w-3.5" />
       {value !== undefined && <span className="text-xs font-medium">{value.toFixed(1)}%</span>}
     </span>

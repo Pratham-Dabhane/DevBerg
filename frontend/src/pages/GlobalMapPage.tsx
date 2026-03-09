@@ -30,9 +30,9 @@ function getActivityLevel(score: number): typeof ACTIVITY_LEVELS[number] {
 }
 
 const activityColors: Record<string, string> = {
-  High: "text-emerald-400",
-  Medium: "text-amber-400",
-  Low: "text-gray-500",
+  High: "text-dp-accent",
+  Medium: "text-dp-warning",
+  Low: "text-dp-text-3",
 };
 
 export default function GlobalMapPage() {
@@ -72,7 +72,7 @@ export default function GlobalMapPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Global Developer Activity</h1>
-        <p className="text-sm text-gray-500">Developer ecosystem activity patterns across regions</p>
+        <p className="text-sm text-dp-text-3">Developer ecosystem activity patterns across regions</p>
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -87,7 +87,7 @@ export default function GlobalMapPage() {
         <button
           onClick={() => setTechFilter(null)}
           className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
-            !techFilter ? "bg-blue-500/15 text-blue-400" : "bg-gray-800/50 text-gray-500 hover:text-gray-300"
+            !techFilter ? "bg-dp-accent-dim text-dp-accent" : "bg-dp-surface text-dp-text-3 hover:text-dp-text-2"
           }`}
         >
           All Technologies
@@ -97,7 +97,7 @@ export default function GlobalMapPage() {
             key={tech}
             onClick={() => setTechFilter(techFilter === tech ? null : tech)}
             className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
-              techFilter === tech ? "bg-blue-500/15 text-blue-400" : "bg-gray-800/50 text-gray-500 hover:text-gray-300"
+              techFilter === tech ? "bg-dp-accent-dim text-dp-accent" : "bg-dp-surface text-dp-text-3 hover:text-dp-text-2"
             }`}
           >
             {tech}
@@ -108,15 +108,15 @@ export default function GlobalMapPage() {
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Map placeholder using SVG world visualization */}
         <SectionCard title="Activity Map" subtitle="Click a region to explore" className="lg:col-span-2">
-          <div className="relative h-[400px] rounded-lg bg-gray-900/50 overflow-hidden">
+          <div className="relative h-[400px] rounded-lg bg-dp-surface overflow-hidden">
             {/* Simplified SVG world map dots */}
             <svg viewBox="0 0 800 400" className="w-full h-full">
               {/* Grid lines */}
               {Array.from({ length: 9 }, (_, i) => (
-                <line key={`h${i}`} x1="0" y1={i * 50} x2="800" y2={i * 50} stroke="#1f2937" strokeWidth="0.5" />
+                <line key={`h${i}`} x1="0" y1={i * 50} x2="800" y2={i * 50} stroke="#1E1F27" strokeWidth="0.5" />
               ))}
               {Array.from({ length: 17 }, (_, i) => (
-                <line key={`v${i}`} x1={i * 50} y1="0" x2={i * 50} y2="400" stroke="#1f2937" strokeWidth="0.5" />
+                <line key={`v${i}`} x1={i * 50} y1="0" x2={i * 50} y2="400" stroke="#1E1F27" strokeWidth="0.5" />
               ))}
 
               {/* Region dots */}
@@ -130,7 +130,7 @@ export default function GlobalMapPage() {
                 return (
                   <g key={region.name} onClick={() => setSelectedRegion(isSelected ? null : region.name)} className="cursor-pointer">
                     {/* Pulse animation */}
-                    <circle cx={x} cy={y} r={radius + 4} fill="none" stroke="#3b82f6" strokeWidth="1" opacity={isSelected ? 0.5 : 0}>
+                    <circle cx={x} cy={y} r={radius + 4} fill="none" stroke="#6BE6C1" strokeWidth="1" opacity={isSelected ? 0.5 : 0}>
                       {isSelected && (
                         <animate attributeName="r" from={String(radius)} to={String(radius + 15)} dur="1.5s" repeatCount="indefinite" />
                       )}
@@ -143,7 +143,7 @@ export default function GlobalMapPage() {
                       cx={x}
                       cy={y}
                       r={radius}
-                      fill={isSelected ? "#3b82f6" : avgScore > 0.5 ? "#22c55e" : avgScore > 0.3 ? "#f59e0b" : "#6b7280"}
+                      fill={isSelected ? "#6BE6C1" : avgScore > 0.5 ? "#6BE6C1" : avgScore > 0.3 ? "#F0B866" : "#3A3A4A"}
                       opacity={0.7}
                       className="transition-all duration-200 hover:opacity-100"
                     />
@@ -151,7 +151,7 @@ export default function GlobalMapPage() {
                       x={x}
                       y={y - radius - 6}
                       textAnchor="middle"
-                      className="text-[9px] fill-gray-400 pointer-events-none"
+                      className="text-[9px] fill-dp-text-3 pointer-events-none"
                     >
                       {region.name}
                     </text>
@@ -174,7 +174,7 @@ export default function GlobalMapPage() {
                 <div className="space-y-3">
                   {selected.technologies.map((t) => (
                     <div key={t.name} className="flex items-center justify-between">
-                      <span className="text-sm text-gray-300">{t.name}</span>
+                    <span className="text-sm text-dp-text">{t.name}</span>
                       <span className={`text-xs font-medium ${activityColors[t.activity]}`}>
                         {t.activity}
                       </span>
@@ -185,7 +185,7 @@ export default function GlobalMapPage() {
             </motion.div>
           ) : (
             <SectionCard title="Region Details" subtitle="Click a region on the map">
-              <p className="text-sm text-gray-500 py-4">Select a region to see technology adoption patterns.</p>
+              <p className="text-sm text-dp-text-3 py-4">Select a region to see technology adoption patterns.</p>
             </SectionCard>
           )}
 
@@ -201,12 +201,12 @@ export default function GlobalMapPage() {
                 .map((r, i) => (
                   <div
                     key={r.name}
-                    className="flex items-center gap-2 text-sm cursor-pointer hover:bg-gray-800/30 rounded px-2 py-1.5 transition-colors"
+                    className="flex items-center gap-2 text-sm cursor-pointer hover:bg-dp-surface-2 rounded px-2 py-1.5 transition-colors"
                     onClick={() => setSelectedRegion(r.name)}
                   >
-                    <span className="text-xs font-bold text-gray-500 w-5">{i + 1}</span>
-                    <MapPin className="h-3 w-3 text-gray-600" />
-                    <span className="text-gray-300 flex-1">{r.name}</span>
+                    <span className="text-xs font-bold text-dp-text-3 w-5">{i + 1}</span>
+                    <MapPin className="h-3 w-3 text-dp-text-4" />
+                    <span className="text-dp-text flex-1">{r.name}</span>
                     <ScoreBar value={r.avg * 100} className="w-16" />
                   </div>
                 ))}

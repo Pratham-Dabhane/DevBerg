@@ -16,7 +16,7 @@ import { SectionCard, ChartTooltip, PageSpinner, PageError } from "../components
 import TrendIndicator from "../components/ui/TrendIndicator";
 import { useMomentum } from "../hooks/useApi";
 
-const COLORS = ["#3b82f6", "#8b5cf6", "#06b6d4", "#22c55e", "#f59e0b"];
+const COLORS = ["#6BE6C1", "#7C9BFF", "#A78BFA", "#F0B866", "#F87171"];
 
 const CATEGORY_MAP: Record<string, string> = {
   FastAPI: "Backend",
@@ -58,21 +58,21 @@ export default function MomentumPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Momentum Intelligence</h1>
-        <p className="text-sm text-gray-500">Technology momentum scoring and velocity analysis</p>
+        <p className="text-sm text-dp-text-3">Technology momentum scoring and velocity analysis</p>
       </div>
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-500">Category:</span>
+          <span className="text-xs text-dp-text-3">Category:</span>
           {["All", "AI", "Backend", "Languages", "Database"].map((cat) => (
             <button
               key={cat}
               onClick={() => setCategoryFilter(cat)}
               className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
                 categoryFilter === cat
-                  ? "bg-blue-500/15 text-blue-400"
-                  : "bg-gray-800/50 text-gray-500 hover:text-gray-300"
+                  ? "bg-dp-accent-dim text-dp-accent"
+                  : "bg-dp-surface text-dp-text-3 hover:text-dp-text-2"
               }`}
             >
               {cat}
@@ -80,7 +80,7 @@ export default function MomentumPage() {
           ))}
         </div>
         <div className="flex items-center gap-2 ml-auto">
-          <span className="text-xs text-gray-500">Min score:</span>
+          <span className="text-xs text-dp-text-3">Min score:</span>
           <input
             type="range"
             min={0}
@@ -88,9 +88,9 @@ export default function MomentumPage() {
             step={0.05}
             value={minScore}
             onChange={(e) => setMinScore(parseFloat(e.target.value))}
-            className="w-24 accent-blue-500"
+            className="w-24"
           />
-          <span className="text-xs text-gray-400 w-8">{minScore.toFixed(2)}</span>
+          <span className="text-xs text-dp-text-2 w-8">{minScore.toFixed(2)}</span>
         </div>
       </div>
 
@@ -99,9 +99,9 @@ export default function MomentumPage() {
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} layout="vertical" barSize={18}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" horizontal={false} />
-              <XAxis type="number" tick={{ fill: "#6b7280", fontSize: 11 }} axisLine={false} tickLine={false} />
-              <YAxis type="category" dataKey="name" tick={{ fill: "#9ca3af", fontSize: 12 }} axisLine={false} tickLine={false} width={90} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#1E1F27" horizontal={false} />
+              <XAxis type="number" tick={{ fill: "#3A3A4A", fontSize: 11 }} axisLine={false} tickLine={false} />
+              <YAxis type="category" dataKey="name" tick={{ fill: "#5A5A6E", fontSize: 12 }} axisLine={false} tickLine={false} width={90} />
               <Tooltip content={<ChartTooltip />} />
               <Bar dataKey="score" name="Momentum Score" radius={[0, 6, 6, 0]}>
                 {chartData.map((_, i) => (
@@ -118,7 +118,7 @@ export default function MomentumPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-800/40 text-xs uppercase tracking-wider text-gray-500">
+              <tr className="border-b border-dp-border text-xs uppercase tracking-wider text-dp-text-3">
                 <th className="pb-2 text-left">Technology</th>
                 <th className="pb-2 text-center cursor-pointer select-none" onClick={() => toggleSort("momentum_score")}>
                   Momentum {sortCol === "momentum_score" && (sortAsc ? "↑" : "↓")}
@@ -142,7 +142,7 @@ export default function MomentumPage() {
                   initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.03 }}
-                  className="border-b border-gray-800/30 hover:bg-gray-800/20 transition-colors"
+                  className="border-b border-dp-border/50 hover:bg-dp-surface-2 transition-colors"
                 >
                   <td className="py-3 font-medium flex items-center gap-2">
                     {m.technology_name}
@@ -153,15 +153,15 @@ export default function MomentumPage() {
                     )}
                   </td>
                   <td className="py-3 text-center">
-                    <span className={`font-bold ${m.momentum_score > 0.5 ? "text-emerald-400" : m.momentum_score > 0.2 ? "text-blue-400" : "text-gray-400"}`}>
+                    <span className={`font-bold ${m.momentum_score > 0.5 ? "text-dp-accent" : m.momentum_score > 0.2 ? "text-dp-secondary" : "text-dp-text-2"}`}>
                       {m.momentum_score.toFixed(3)}
                     </span>
                   </td>
-                  <td className="py-3 text-center text-gray-300">{m.stars_growth.toFixed(3)}</td>
-                  <td className="py-3 text-center text-gray-300">{m.contributors_growth.toFixed(3)}</td>
-                  <td className="py-3 text-center text-gray-400 hidden md:table-cell">{m.stackoverflow_growth.toFixed(3)}</td>
-                  <td className="py-3 text-center text-gray-400 hidden md:table-cell">{m.hn_mentions.toFixed(3)}</td>
-                  <td className="py-3 text-center text-gray-400 hidden lg:table-cell">{m.commit_activity.toFixed(3)}</td>
+                  <td className="py-3 text-center text-dp-text">{m.stars_growth.toFixed(3)}</td>
+                  <td className="py-3 text-center text-dp-text">{m.contributors_growth.toFixed(3)}</td>
+                  <td className="py-3 text-center text-dp-text-2 hidden md:table-cell">{m.stackoverflow_growth.toFixed(3)}</td>
+                  <td className="py-3 text-center text-dp-text-2 hidden md:table-cell">{m.hn_mentions.toFixed(3)}</td>
+                  <td className="py-3 text-center text-dp-text-2 hidden lg:table-cell">{m.commit_activity.toFixed(3)}</td>
                   <td className="py-3 text-center">
                     <TrendIndicator direction={m.momentum_score > 0.3 ? "up" : m.momentum_score > 0.1 ? "stable" : "down"} />
                   </td>

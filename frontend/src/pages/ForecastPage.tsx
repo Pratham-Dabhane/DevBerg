@@ -6,237 +6,192 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
+  CartesianGrid,
   BarChart,
   Bar,
-  CartesianGrid,
   Cell,
 } from "recharts";
-import { ArrowUpRight, ArrowDownRight, Minus } from "lucide-react";
+import { motion } from "framer-motion";
+import { TrendingUp } from "lucide-react";
 
-import Card from "../components/Card";
-import CategoryFilter from "../components/CategoryFilter";
-import { Spinner, ErrorBox } from "../components/StatusIndicators";
-import { useFetch } from "../hooks/useFetch";
-import { api } from "../api/client";
-import { filterByCategory } from "../utils/categories";
-import type { TechCategory } from "../types";
+import MetricCard from "../components/ui/MetricCard";
+import TrendIndicator from "../components/ui/TrendIndicator";
+import TechnologyBadge from "../components/ui/TechnologyBadge";
+import { SectionCard, ChartTooltip, PageSpinner, PageError } from "../components/ui/PageShell";
+import ScoreBar from "../components/ui/ScoreBar";
+import { useForecast } from "../hooks/useApi";
 
 const COLORS = ["#3b82f6", "#8b5cf6", "#06b6d4", "#22c55e", "#f59e0b"];
 
-const TrendIcon = ({ dir }: { dir: string }) => {
-  if (dir === "up") return <ArrowUpRight className="h-4 w-4 text-emerald-400" />;
-  if (dir === "down") return <ArrowDownRight className="h-4 w-4 text-red-400" />;
-  return <Minus className="h-4 w-4 text-gray-400" />;
-};
-
 export default function ForecastPage() {
-  const [category, setCategory] = useState<TechCategory>("all");
+  const { data, isLoading, error } = useForecast();
+  const [selectedTech, setSelectedTech] = useState<string | null>(null);
 
-  const predictions = useFetch(() => api.predictions(), []);
-  const metrics = useFetch(() => api.metricsLatest(), []);
+  if (isLoading) return <PageSpinner />;
+  if (error) return <PageError message={(error as Error).message} />;
 
-  if (predictions.loading || metrics.loading) return <Spinner />;
-  if (predictions.error) return <ErrorBox message={predictions.error} />;
+  const items = data ?? [];
+  const techs = [...new Set(items.map((f) => f.technology))];
 
-  const filteredPredictions = filterByCategory(predictions.data ?? [], category);
-  const filteredMetrics = filterByCategory(metrics.data ?? [], category);
+  // Group by tech with horizons
+  const grouped = techs.map((tech) => {
+    const forecasts = items.filter((f) => f.technology === tech).sort((a, b) => a.horizon_months - b.horizon_months);
+    return { technology: tech, forecasts };
+  });
 
-  // Predicted growth bar chart
-  const growthData = filteredPredictions
-    .map((p) => ({
-      name: p.technology,
-      predicted_growth: p.predicted_growth,
-      confidence: p.confidence_score,
-      trend: p.trend_direction,
-    }))
-    .sort((a, b) => b.predicted_growth - a.predicted_growth);
+  const filteredGroup = selectedTech
+    ? grouped.filter((g) => g.technology === selectedTech)
+    : grouped;
 
-  // Confidence area data (simulate a timeline for visual effect)
-  const confidenceData = filteredPredictions.map((p, i) => ({
-    name: p.technology,
-    confidence: Math.round(p.confidence_score * 100),
-    momentum: Math.round(p.momentum_score * 100),
+  // Summary: avg predicted growth, avg confidence
+  const avgGrowth = items.length > 0
+    ? (items.reduce((s, f) => s + f.predicted_growth_pct, 0) / items.length).toFixed(1)
+    : "0";
+  const avgConfidence = items.length > 0
+    ? (items.reduce((s, f) => s + f.confidence_score, 0) / items.length * 100).toFixed(0)
+    : "0";
+
+  // Chart: predicted growth by tech (latest horizon)
+  const latestForecasts = techs.map((tech) => {
+    const latest = items.filter((f) => f.technology === tech).sort((a, b) => b.horizon_months - a.horizon_months)[0];
+    return latest;
+  }).filter(Boolean).sort((a, b) => b!.predicted_growth_pct - a!.predicted_growth_pct);
+
+  const barData = latestForecasts.map((f) => ({
+    name: f!.technology,
+    growth: f!.predicted_growth_pct,
+    confidence: f!.confidence_score * 100,
   }));
 
-  // Forecast projection: for each tech, show current momentum vs predicted growth
-  const comparisonData = filteredPredictions.map((p) => {
-    const m = filteredMetrics.find((met) => met.technology === p.technology);
-    return {
-      name: p.technology,
-      current: m ? Math.round(m.momentum_score * 100) : 0,
-      predicted: Math.round(p.predicted_growth * 100),
-    };
+  // Multi-horizon area chart data
+  const horizonData = [3, 6, 12].map((h) => {
+    const row: Record<string, any> = { horizon: `${h}mo` };
+    techs.forEach((tech) => {
+      const f = items.find((i) => i.technology === tech && i.horizon_months === h);
+      row[tech] = f ? f.predicted_growth_pct : null;
+    });
+    return row;
   });
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Forecast</h1>
-          <p className="text-sm text-gray-500">Predicted technology adoption trends over the next 6 months</p>
-        </div>
-        <CategoryFilter value={category} onChange={setCategory} />
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Technology Forecast</h1>
+        <p className="text-sm text-gray-500">Multi-horizon growth predictions with ensemble modeling</p>
       </div>
 
-      {/* Prediction cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-        {filteredPredictions.map((p) => (
-          <div
-            key={p.technology}
-            className="rounded-xl border border-gray-800 bg-gray-900/60 p-4 space-y-2"
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <MetricCard label="Technologies" value={techs.length} />
+        <MetricCard label="Avg Growth" value={`${avgGrowth}%`} icon={<TrendingUp className="h-4 w-4" />} />
+        <MetricCard label="Avg Confidence" value={`${avgConfidence}%`} />
+        <MetricCard label="Forecasts" value={items.length} />
+      </div>
+
+      {/* Tech filter */}
+      <div className="flex flex-wrap gap-2">
+        <button
+          onClick={() => setSelectedTech(null)}
+          className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+            !selectedTech ? "bg-blue-500/15 text-blue-400" : "bg-gray-800/50 text-gray-500 hover:text-gray-300"
+          }`}
+        >
+          All
+        </button>
+        {techs.map((tech) => (
+          <button
+            key={tech}
+            onClick={() => setSelectedTech(selectedTech === tech ? null : tech)}
+            className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+              selectedTech === tech ? "bg-blue-500/15 text-blue-400" : "bg-gray-800/50 text-gray-500 hover:text-gray-300"
+            }`}
           >
-            <div className="flex items-center justify-between">
-              <span className="font-medium text-sm">{p.technology}</span>
-              <TrendIcon dir={p.trend_direction} />
-            </div>
-            <p className="text-2xl font-bold">
-              {(p.predicted_growth * 100).toFixed(1)}
-              <span className="text-sm font-normal text-gray-500">%</span>
-            </p>
-            <div className="flex items-center gap-2 text-xs text-gray-500">
-              <span>Confidence: {(p.confidence_score * 100).toFixed(0)}%</span>
-              <span>•</span>
-              <span>{p.forecast_horizon_months}mo horizon</span>
-            </div>
-            <div className="h-1.5 w-full rounded-full bg-gray-800">
-              <div
-                className="h-1.5 rounded-full bg-brand-500 transition-all"
-                style={{ width: `${Math.min(p.confidence_score * 100, 100)}%` }}
-              />
-            </div>
-          </div>
+            {tech}
+          </button>
         ))}
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* Predicted Growth Chart */}
-        <Card title="Predicted Growth" subtitle="6-month forecast">
+        {/* Growth comparison */}
+        <SectionCard title="Predicted Growth" subtitle="Longest horizon forecast">
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={growthData} layout="vertical" barSize={20}>
+              <BarChart data={barData} layout="vertical" barSize={18}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" horizontal={false} />
-                <XAxis
-                  type="number"
-                  tick={{ fill: "#6b7280", fontSize: 11 }}
-                  axisLine={false}
-                  tickLine={false}
-                />
-                <YAxis
-                  type="category"
-                  dataKey="name"
-                  tick={{ fill: "#9ca3af", fontSize: 12 }}
-                  axisLine={false}
-                  tickLine={false}
-                  width={90}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "#111827",
-                    border: "1px solid #374151",
-                    borderRadius: 8,
-                    fontSize: 12,
-                  }}
-                  formatter={(val: number) => `${(val * 100).toFixed(1)}%`}
-                />
-                <Bar dataKey="predicted_growth" name="Predicted Growth" radius={[0, 6, 6, 0]}>
-                  {growthData.map((_, i) => (
+                <XAxis type="number" tick={{ fill: "#6b7280", fontSize: 11 }} axisLine={false} tickLine={false} unit="%" />
+                <YAxis type="category" dataKey="name" tick={{ fill: "#9ca3af", fontSize: 12 }} axisLine={false} tickLine={false} width={90} />
+                <Tooltip content={<ChartTooltip />} />
+                <Bar dataKey="growth" name="Growth %" radius={[0, 6, 6, 0]}>
+                  {barData.map((_, i) => (
                     <Cell key={i} fill={COLORS[i % COLORS.length]} />
                   ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
-        </Card>
+        </SectionCard>
 
-        {/* Current vs Predicted */}
-        <Card title="Current Momentum vs Predicted Growth" subtitle="Where things are headed">
+        {/* Multi-horizon area */}
+        <SectionCard title="Growth Trajectories" subtitle="3, 6, and 12-month horizons">
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={comparisonData} barGap={4}>
+              <AreaChart data={horizonData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
-                <XAxis
-                  dataKey="name"
-                  tick={{ fill: "#9ca3af", fontSize: 12 }}
-                  axisLine={false}
-                  tickLine={false}
-                />
-                <YAxis
-                  tick={{ fill: "#6b7280", fontSize: 11 }}
-                  axisLine={false}
-                  tickLine={false}
-                  unit="%"
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "#111827",
-                    border: "1px solid #374151",
-                    borderRadius: 8,
-                    fontSize: 12,
-                  }}
-                  formatter={(val: number) => `${val}%`}
-                />
-                <Bar dataKey="current" name="Current Momentum" fill="#6b7280" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="predicted" name="Predicted Growth" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-              </BarChart>
+                <XAxis dataKey="horizon" tick={{ fill: "#9ca3af", fontSize: 12 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: "#6b7280", fontSize: 11 }} axisLine={false} tickLine={false} unit="%" />
+                <Tooltip content={<ChartTooltip />} />
+                {(selectedTech ? [selectedTech] : techs).map((tech, i) => (
+                  <Area
+                    key={tech}
+                    type="monotone"
+                    dataKey={tech}
+                    stroke={COLORS[i % COLORS.length]}
+                    fill={COLORS[i % COLORS.length]}
+                    fillOpacity={0.1}
+                    strokeWidth={2}
+                    connectNulls
+                  />
+                ))}
+              </AreaChart>
             </ResponsiveContainer>
           </div>
-        </Card>
+        </SectionCard>
       </div>
 
-      {/* Confidence */}
-      <Card title="Model Confidence" subtitle="Forecast reliability per technology">
-        <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={confidenceData}>
-              <defs>
-                <linearGradient id="confGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.3} />
-                  <stop offset="100%" stopColor="#3b82f6" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
-              <XAxis
-                dataKey="name"
-                tick={{ fill: "#9ca3af", fontSize: 12 }}
-                axisLine={false}
-                tickLine={false}
-              />
-              <YAxis
-                tick={{ fill: "#6b7280", fontSize: 11 }}
-                axisLine={false}
-                tickLine={false}
-                unit="%"
-                domain={[0, 100]}
-              />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "#111827",
-                  border: "1px solid #374151",
-                  borderRadius: 8,
-                  fontSize: 12,
-                }}
-              />
-              <Area
-                type="monotone"
-                dataKey="confidence"
-                name="Confidence"
-                stroke="#3b82f6"
-                fill="url(#confGrad)"
-                strokeWidth={2}
-              />
-              <Area
-                type="monotone"
-                dataKey="momentum"
-                name="Momentum"
-                stroke="#8b5cf6"
-                fill="none"
-                strokeWidth={2}
-                strokeDasharray="5 5"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      </Card>
+      {/* Forecast cards */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {filteredGroup.map((g, gi) => (
+          <motion.div
+            key={g.technology}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: gi * 0.05 }}
+            className="rounded-xl border border-gray-800/60 bg-gray-900/30 p-5"
+          >
+            <div className="flex items-center justify-between mb-3">
+              <TechnologyBadge name={g.technology} />
+              <TrendIndicator direction={g.forecasts[0]?.trend_direction ?? "stable"} />
+            </div>
+            <div className="space-y-3">
+              {g.forecasts.map((f) => (
+                <div key={f.horizon_months} className="flex items-center gap-3">
+                  <span className="text-xs text-gray-500 w-8">{f.horizon_months}mo</span>
+                  <div className="flex-1">
+                    <ScoreBar value={Math.min(Math.abs(f.predicted_growth_pct), 100)} />
+                  </div>
+                  <span className={`text-sm font-bold ${f.predicted_growth_pct >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+                    {f.predicted_growth_pct >= 0 ? "+" : ""}{f.predicted_growth_pct.toFixed(1)}%
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-3 flex items-center gap-2 text-[10px] text-gray-500">
+              <span>Confidence: {(g.forecasts[0]?.confidence_score * 100).toFixed(0)}%</span>
+              <span>·</span>
+              <span>Models: {g.forecasts[0]?.model_used}</span>
+            </div>
+          </motion.div>
+        ))}
+      </div>
     </div>
   );
 }

@@ -12,6 +12,7 @@ export default defineConfig({
       '/analytics': 'http://localhost:8000',
       '/repos': 'http://localhost:8000',
       '/graph': 'http://localhost:8000',
+      '/ai': 'http://localhost:8000',
     },
   },
 })

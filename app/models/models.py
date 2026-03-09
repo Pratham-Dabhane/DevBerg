@@ -180,3 +180,36 @@ class TechnologyGraphMetrics(Base):
     last_updated: datetime = Column(
         DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc)
     )
+
+
+# ── AI / Recommendation tables ───────────────────────────────────
+
+class UserRecommendation(Base):
+    __tablename__ = "user_recommendations"
+
+    id: int = Column(Integer, primary_key=True, autoincrement=True)
+    skill_profile: str = Column(String(500), nullable=False)  # comma-separated input skills
+    technology_name: str = Column(String(100), nullable=False, index=True)
+    recommendation_score: float = Column(Float, nullable=False, default=0.0)
+    skill_similarity: float = Column(Float, nullable=False, default=0.0)
+    momentum_score: float = Column(Float, nullable=False, default=0.0)
+    ecosystem_proximity: float = Column(Float, nullable=False, default=0.0)
+    reason: str = Column(String(500), nullable=False, default="")
+    created_at: datetime = Column(
+        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc)
+    )
+
+
+class TechnologyForecast(Base):
+    __tablename__ = "technology_forecasts"
+
+    id: int = Column(Integer, primary_key=True, autoincrement=True)
+    technology: str = Column(String(100), nullable=False, index=True)
+    horizon_months: int = Column(Integer, nullable=False, default=6)
+    predicted_growth_pct: float = Column(Float, nullable=False, default=0.0)
+    model_used: str = Column(String(30), nullable=False, default="linear")  # prophet/arima/xgboost/linear
+    confidence_score: float = Column(Float, nullable=False, default=0.0)
+    trend_direction: str = Column(String(10), nullable=False, default="stable")
+    created_at: datetime = Column(
+        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc)
+    )

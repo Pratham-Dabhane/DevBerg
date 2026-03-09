@@ -222,3 +222,52 @@ class ClusterSchema(BaseModel):
     cluster_id: int
     cluster_label: str
     technologies: list[str]
+
+
+# ── AI / Recommendation schemas ─────────────────────────────────
+
+class SkillProfileInput(BaseModel):
+    skills: list[str]
+
+
+class RecommendationSchema(BaseModel):
+    technology_name: str
+    recommendation_score: float
+    skill_similarity: float
+    momentum_score: float
+    ecosystem_proximity: float
+    reason: str
+
+
+class UserRecommendationSchema(BaseModel):
+    id: int
+    skill_profile: str
+    technology_name: str
+    recommendation_score: float
+    skill_similarity: float
+    momentum_score: float
+    ecosystem_proximity: float
+    reason: str
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
+class TechnologyForecastSchema(BaseModel):
+    id: int
+    technology: str
+    horizon_months: int
+    predicted_growth_pct: float
+    model_used: str
+    confidence_score: float
+    trend_direction: str
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
+class NLInsightSchema(BaseModel):
+    technology: str
+    insight: str
+    category: str
+    severity: str

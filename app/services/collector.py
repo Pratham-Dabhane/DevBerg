@@ -13,6 +13,7 @@ from app.analytics.lifecycle_detector import LifecycleDetector
 from app.analytics.emerging_detector import EmergingDetector
 from app.analytics.repo_health_analyzer import RepoHealthAnalyzer
 from app.graph.graph_analyzer import GraphAnalyzer
+from app.ml.investment_forecaster import InvestmentForecaster
 
 logger = logging.getLogger(__name__)
 
@@ -103,5 +104,18 @@ def run_graph_analysis() -> None:
         logger.info("Scheduled graph analysis completed successfully.")
     except Exception as e:
         logger.error("Graph analysis failed: %s", e)
+    finally:
+        db.close()
+
+
+def run_investment_forecasts() -> None:
+    """Execute the investment forecaster."""
+    logger.info("Starting scheduled investment forecasts...")
+    db: Session = SessionLocal()
+    try:
+        InvestmentForecaster(db).run()
+        logger.info("Scheduled investment forecasts completed successfully.")
+    except Exception as e:
+        logger.error("Investment forecasts failed: %s", e)
     finally:
         db.close()

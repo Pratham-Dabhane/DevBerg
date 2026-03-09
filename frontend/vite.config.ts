@@ -10,6 +10,8 @@ export default defineConfig({
       '/api': 'http://localhost:8000',
       '/insights': 'http://localhost:8000',
       '/analytics': 'http://localhost:8000',
+      '/repos': 'http://localhost:8000',
+      '/graph': 'http://localhost:8000',
     },
   },
 })

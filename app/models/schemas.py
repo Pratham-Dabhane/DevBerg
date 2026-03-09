@@ -153,3 +153,72 @@ class EmergingTechnologySchema(BaseModel):
     detected_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+# ── Repository Health schemas ─────────────────────────────────────
+
+class RepositoryHealthSchema(BaseModel):
+    id: int
+    repository_name: str
+    health_score: float
+    risk_level: str
+    maintainer_activity: float
+    issue_resolution_speed: float
+    contributors: int
+    release_frequency: float
+    commit_frequency: float
+    last_updated: datetime
+
+    model_config = {"from_attributes": True}
+
+
+# ── Graph schemas ─────────────────────────────────────────────────
+
+class TechnologyGraphMetricsSchema(BaseModel):
+    id: int
+    technology_name: str
+    degree_centrality: float
+    betweenness_centrality: float
+    closeness_centrality: float
+    pagerank: float
+    ecosystem_influence: float
+    cluster_id: int
+    cluster_label: str
+    last_updated: datetime
+
+    model_config = {"from_attributes": True}
+
+
+class GraphNodeSchema(BaseModel):
+    id: str
+    label: str
+    cluster_id: int
+    cluster_label: str
+    ecosystem_influence: float
+    pagerank: float
+
+
+class GraphEdgeSchema(BaseModel):
+    source: str
+    target: str
+    relationship: str
+
+
+class GraphNetworkSchema(BaseModel):
+    nodes: list[GraphNodeSchema]
+    edges: list[GraphEdgeSchema]
+
+
+class InfluenceRankSchema(BaseModel):
+    technology_name: str
+    ecosystem_influence: float
+    degree_centrality: float
+    betweenness_centrality: float
+    closeness_centrality: float
+    pagerank: float
+
+
+class ClusterSchema(BaseModel):
+    cluster_id: int
+    cluster_label: str
+    technologies: list[str]

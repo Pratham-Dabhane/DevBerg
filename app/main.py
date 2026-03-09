@@ -12,7 +12,9 @@ from app.models.models import Base
 from app.api.routes import router
 from app.api.insights_routes import router as insights_router
 from app.api.analytics_routes import router as analytics_router
-from app.services.collector import run_collection, run_pipeline, run_trend_engine, run_analytics
+from app.api.repo_health_routes import router as repo_health_router
+from app.graph.graph_api import router as graph_router
+from app.services.collector import run_collection, run_pipeline, run_trend_engine, run_analytics, run_repo_health, run_graph_analysis
 
 logging.basicConfig(
     level=logging.INFO,
@@ -58,6 +60,20 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         id="analytics_engine",
         replace_existing=True,
     )
+    scheduler.add_job(
+        run_repo_health,
+        "interval",
+        hours=24,
+        id="repo_health_analyzer",
+        replace_existing=True,
+    )
+    scheduler.add_job(
+        run_graph_analysis,
+        "interval",
+        hours=24,
+        id="graph_analysis",
+        replace_existing=True,
+    )
     scheduler.start()
     logger.info(
         "Scheduler started — collecting every %d hours, pipeline & analytics daily.",
@@ -88,6 +104,8 @@ app.add_middleware(
 app.include_router(router)
 app.include_router(insights_router)
 app.include_router(analytics_router)
+app.include_router(repo_health_router)
+app.include_router(graph_router)
 
 
 @app.get("/health")

@@ -11,6 +11,8 @@ from app.ml.trend_engine import TrendEngine
 from app.analytics.momentum_engine import MomentumEngine
 from app.analytics.lifecycle_detector import LifecycleDetector
 from app.analytics.emerging_detector import EmergingDetector
+from app.analytics.repo_health_analyzer import RepoHealthAnalyzer
+from app.graph.graph_analyzer import GraphAnalyzer
 
 logger = logging.getLogger(__name__)
 
@@ -75,5 +77,31 @@ def run_analytics() -> None:
         logger.info("Scheduled analytics run completed successfully.")
     except Exception as e:
         logger.error("Analytics run failed: %s", e)
+    finally:
+        db.close()
+
+
+def run_repo_health() -> None:
+    """Execute the repository health analyzer."""
+    logger.info("Starting scheduled repo health analysis...")
+    db: Session = SessionLocal()
+    try:
+        RepoHealthAnalyzer(db).run()
+        logger.info("Scheduled repo health analysis completed successfully.")
+    except Exception as e:
+        logger.error("Repo health analysis failed: %s", e)
+    finally:
+        db.close()
+
+
+def run_graph_analysis() -> None:
+    """Execute the technology graph analyzer."""
+    logger.info("Starting scheduled graph analysis...")
+    db: Session = SessionLocal()
+    try:
+        GraphAnalyzer(db).run()
+        logger.info("Scheduled graph analysis completed successfully.")
+    except Exception as e:
+        logger.error("Graph analysis failed: %s", e)
     finally:
         db.close()

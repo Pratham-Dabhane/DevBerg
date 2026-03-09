@@ -144,3 +144,39 @@ class EmergingTechnology(Base):
     detected_at: datetime = Column(
         DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc)
     )
+
+
+class RepositoryHealth(Base):
+    __tablename__ = "repository_health"
+
+    id: int = Column(Integer, primary_key=True, autoincrement=True)
+    repository_name: str = Column(String(255), nullable=False, index=True)
+    health_score: float = Column(Float, nullable=False, default=0.0)
+    risk_level: str = Column(String(20), nullable=False, default="Critical")
+    maintainer_activity: float = Column(Float, nullable=False, default=0.0)
+    issue_resolution_speed: float = Column(Float, nullable=False, default=0.0)
+    contributors: int = Column(Integer, nullable=False, default=0)
+    release_frequency: float = Column(Float, nullable=False, default=0.0)
+    commit_frequency: float = Column(Float, nullable=False, default=0.0)
+    last_updated: datetime = Column(
+        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc)
+    )
+
+
+# ── Graph tables ──────────────────────────────────────────────────
+
+class TechnologyGraphMetrics(Base):
+    __tablename__ = "technology_graph_metrics"
+
+    id: int = Column(Integer, primary_key=True, autoincrement=True)
+    technology_name: str = Column(String(100), nullable=False, index=True)
+    degree_centrality: float = Column(Float, nullable=False, default=0.0)
+    betweenness_centrality: float = Column(Float, nullable=False, default=0.0)
+    closeness_centrality: float = Column(Float, nullable=False, default=0.0)
+    pagerank: float = Column(Float, nullable=False, default=0.0)
+    ecosystem_influence: float = Column(Float, nullable=False, default=0.0)
+    cluster_id: int = Column(Integer, nullable=False, default=0)
+    cluster_label: str = Column(String(50), nullable=False, default="Unknown")
+    last_updated: datetime = Column(
+        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc)
+    )

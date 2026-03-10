@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { SectionCard, PageSpinner, PageError } from "../components/ui/PageShell";
 import TechnologyBadge from "../components/ui/TechnologyBadge";
 import { useLifecycle } from "../hooks/useApi";
+import { useStaggerReveal } from "../animations/useScrollReveal";
 
 const RINGS = ["Adopt", "Trial", "Assess", "Hold"] as const;
 
@@ -25,6 +26,7 @@ const RING_COLORS: Record<string, { bg: string; border: string; text: string }> 
 const RING_RADII = [90, 155, 210, 260];
 
 export default function TechRadarPage() {
+  const staggerRef = useStaggerReveal<HTMLDivElement>(":scope > *");
   const { data, isLoading, error } = useLifecycle();
   const [selected, setSelected] = useState<string | null>(null);
 
@@ -40,7 +42,7 @@ export default function TechRadarPage() {
   const selectedTech = items.find((t) => t.technology_name === selected);
 
   return (
-    <div className="space-y-6">
+    <div ref={staggerRef} className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Technology Radar</h1>
         <p className="text-sm text-dp-text-3">Lifecycle-based technology positioning inspired by ThoughtWorks</p>

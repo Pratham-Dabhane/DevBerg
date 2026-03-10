@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard,
@@ -17,6 +17,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
+import { useSmoothScroll } from "../../hooks/useSmoothScroll";
 
 const NAV_ITEMS = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -36,6 +37,12 @@ export default function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation();
+  const { wrapperRef, scrollToTop } = useSmoothScroll();
+
+  // Scroll to top on route change
+  useEffect(() => {
+    scrollToTop();
+  }, [location.pathname, scrollToTop]);
 
   return (
     <div className="flex h-screen overflow-hidden bg-dp-bg text-dp-text">
@@ -153,7 +160,7 @@ export default function AppLayout() {
         </header>
 
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto" data-lenis-prevent>
+        <main ref={wrapperRef} className="flex-1 overflow-y-auto">
           <motion.div
             key={location.pathname}
             initial={{ opacity: 0, y: 10 }}

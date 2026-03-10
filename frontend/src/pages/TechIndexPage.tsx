@@ -16,8 +16,10 @@ import TechnologyBadge from "../components/ui/TechnologyBadge";
 import { SectionCard, ChartTooltip, PageSpinner, PageError } from "../components/ui/PageShell";
 import ScoreBar from "../components/ui/ScoreBar";
 import { useMomentum, useForecast, useRepoHealth } from "../hooks/useApi";
+import { useStaggerReveal } from "../animations/useScrollReveal";
 
 export default function TechIndexPage() {
+  const staggerRef = useStaggerReveal<HTMLDivElement>(":scope > *");
   const momentum = useMomentum();
   const forecast = useForecast();
   const health = useRepoHealth();
@@ -74,7 +76,7 @@ export default function TechIndexPage() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div ref={staggerRef} className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Technology Market Index</h1>
         <p className="text-sm text-dp-text-3">Composite health and growth index across the developer ecosystem</p>
@@ -104,7 +106,7 @@ export default function TechIndexPage() {
       {/* Index chart */}
       <SectionCard title="Index Trend" subtitle="Composite index over time">
         <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="100%" minWidth={0}>
             <AreaChart data={historyData}>
               <defs>
                 <linearGradient id="indexGrad" x1="0" y1="0" x2="0" y2="1">

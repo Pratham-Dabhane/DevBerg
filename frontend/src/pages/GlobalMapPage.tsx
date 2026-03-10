@@ -6,6 +6,7 @@ import MetricCard from "../components/ui/MetricCard";
 import { SectionCard, PageSpinner, PageError } from "../components/ui/PageShell";
 import ScoreBar from "../components/ui/ScoreBar";
 import { useMomentum } from "../hooks/useApi";
+import { useStaggerReveal } from "../animations/useScrollReveal";
 
 // Simulated global activity by region (since backend endpoint doesn't exist yet)
 const REGIONS = [
@@ -36,6 +37,7 @@ const activityColors: Record<string, string> = {
 };
 
 export default function GlobalMapPage() {
+  const staggerRef = useStaggerReveal<HTMLDivElement>(":scope > *");
   const { data, isLoading, error } = useMomentum();
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const [techFilter, setTechFilter] = useState<string | null>(null);
@@ -69,7 +71,7 @@ export default function GlobalMapPage() {
   const selected = filteredRegions.find((r) => r.name === selectedRegion);
 
   return (
-    <div className="space-y-6">
+    <div ref={staggerRef} className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Global Developer Activity</h1>
         <p className="text-sm text-dp-text-3">Developer ecosystem activity patterns across regions</p>

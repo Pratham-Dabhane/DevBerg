@@ -19,6 +19,7 @@ import { Swords, Trophy } from "lucide-react";
 import { SectionCard, ChartTooltip, PageSpinner, PageError } from "../components/ui/PageShell";
 import TechnologyBadge from "../components/ui/TechnologyBadge";
 import { useMomentum, useRepoHealth, useForecast } from "../hooks/useApi";
+import { useStaggerReveal } from "../animations/useScrollReveal";
 
 export default function BattlesPage() {
   const momentum = useMomentum();
@@ -27,6 +28,7 @@ export default function BattlesPage() {
 
   const [techA, setTechA] = useState<string>("");
   const [techB, setTechB] = useState<string>("");
+  const staggerRef = useStaggerReveal<HTMLDivElement>(":scope > *");
 
   const isLoading = momentum.isLoading || health.isLoading || forecast.isLoading;
   const error = momentum.error || health.error || forecast.error;
@@ -86,7 +88,7 @@ export default function BattlesPage() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div ref={staggerRef} className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Tech Battles</h1>
         <p className="text-sm text-dp-text-3">Head-to-head technology comparison</p>
@@ -139,7 +141,7 @@ export default function BattlesPage() {
         {/* Radar comparison */}
         <SectionCard title="Multi-Dimensional Comparison">
           <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
               <RadarChart data={radarData}>
                 <PolarGrid stroke="#1E1F27" />
                 <PolarAngleAxis dataKey="axis" tick={{ fill: "#5A5A6E", fontSize: 11 }} />
@@ -165,7 +167,7 @@ export default function BattlesPage() {
         {/* Bar comparison */}
         <SectionCard title="Side-by-Side Metrics">
           <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
               <BarChart data={comparisonData} barGap={4}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1E1F27" vertical={false} />
                 <XAxis dataKey="metric" tick={{ fill: "#5A5A6E", fontSize: 12 }} axisLine={false} tickLine={false} />

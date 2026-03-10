@@ -15,6 +15,7 @@ import { Flame } from "lucide-react";
 import { SectionCard, ChartTooltip, PageSpinner, PageError } from "../components/ui/PageShell";
 import TrendIndicator from "../components/ui/TrendIndicator";
 import { useMomentum, useTechnologies } from "../hooks/useApi";
+import { useStaggerReveal } from "../animations/useScrollReveal";
 import { buildCategoryMap, extractCategories, CATEGORY_LABELS } from "../utils/categories";
 
 const COLORS = ["#6BE6C1", "#7C9BFF", "#A78BFA", "#F0B866", "#F87171"];
@@ -29,6 +30,8 @@ export default function MomentumPage() {
 
   const categoryMap = techList ? buildCategoryMap(techList) : {};
   const categories = techList ? extractCategories(techList) : [];
+
+  const staggerRef = useStaggerReveal<HTMLDivElement>(":scope > *");
 
   if (isLoading) return <PageSpinner />;
   if (error) return <PageError message={(error as Error).message} />;
@@ -52,7 +55,7 @@ export default function MomentumPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div ref={staggerRef} className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Momentum Intelligence</h1>
         <p className="text-sm text-dp-text-3">Technology momentum scoring and velocity analysis</p>
@@ -94,7 +97,7 @@ export default function MomentumPage() {
       {/* Momentum chart */}
       <SectionCard title="Momentum Rankings" subtitle="Sorted by composite momentum score">
         <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="100%" minWidth={0}>
             <BarChart data={chartData} layout="vertical" barSize={18}>
               <CartesianGrid strokeDasharray="3 3" stroke="#1E1F27" horizontal={false} />
               <XAxis type="number" tick={{ fill: "#3A3A4A", fontSize: 11 }} axisLine={false} tickLine={false} />

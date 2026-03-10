@@ -17,6 +17,7 @@ import InsightCard from "../components/ui/InsightCard";
 import { SectionCard, ChartTooltip, PageSpinner, PageError } from "../components/ui/PageShell";
 import TrendIndicator from "../components/ui/TrendIndicator";
 import { useMomentum, useEmergingAnalytics, useNLInsights, useRepoHealth } from "../hooks/useApi";
+import { useStaggerReveal } from "../animations/useScrollReveal";
 
 
 
@@ -25,6 +26,8 @@ export default function DashboardPage() {
   const emerging = useEmergingAnalytics();
   const insights = useNLInsights();
   const repoHealth = useRepoHealth();
+
+  const staggerRef = useStaggerReveal<HTMLDivElement>(":scope > *");
 
   const isLoading = momentum.isLoading || emerging.isLoading || insights.isLoading || repoHealth.isLoading;
   const error = momentum.error || emerging.error || insights.error || repoHealth.error;
@@ -53,9 +56,8 @@ export default function DashboardPage() {
     contributors: m.contributors_growth,
   }));
 
-
   return (
-    <div className="space-y-6">
+    <div ref={staggerRef} className="space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
@@ -90,7 +92,7 @@ export default function DashboardPage() {
       <div className="grid gap-6 lg:grid-cols-2">
         <SectionCard title="Technology Momentum" subtitle="Score breakdown by technology">
           <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
               <BarChart data={chartData} barGap={4}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1E1F27" vertical={false} />
                 <XAxis dataKey="name" tick={{ fill: "#5A5A6E", fontSize: 12 }} axisLine={false} tickLine={false} />
@@ -106,7 +108,7 @@ export default function DashboardPage() {
 
         <SectionCard title="Growth Trends" subtitle="Momentum over technologies">
           <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
               <AreaChart data={chartData}>
                 <defs>
                   <linearGradient id="momGrad" x1="0" y1="0" x2="0" y2="1">

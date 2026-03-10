@@ -18,6 +18,7 @@ import MetricCard from "../components/ui/MetricCard";
 import TrendIndicator from "../components/ui/TrendIndicator";
 import TechnologyBadge from "../components/ui/TechnologyBadge";
 import { SectionCard, ChartTooltip, PageSpinner, PageError } from "../components/ui/PageShell";
+import { useStaggerReveal } from "../animations/useScrollReveal";
 import ScoreBar from "../components/ui/ScoreBar";
 import { useForecast } from "../hooks/useApi";
 
@@ -26,6 +27,7 @@ const COLORS = ["#6BE6C1", "#7C9BFF", "#A78BFA", "#F0B866", "#F87171"];
 export default function ForecastPage() {
   const { data, isLoading, error } = useForecast();
   const [selectedTech, setSelectedTech] = useState<string | null>(null);
+  const staggerRef = useStaggerReveal<HTMLDivElement>(":scope > *");
 
   if (isLoading) return <PageSpinner />;
   if (error) return <PageError message={(error as Error).message} />;
@@ -74,7 +76,7 @@ export default function ForecastPage() {
   });
 
   return (
-    <div className="space-y-6">
+    <div ref={staggerRef} className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Technology Forecast</h1>
         <p className="text-sm text-dp-text-3">Multi-horizon growth predictions with ensemble modeling</p>
@@ -114,7 +116,7 @@ export default function ForecastPage() {
         {/* Growth comparison */}
         <SectionCard title="Predicted Growth" subtitle="Longest horizon forecast">
           <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
               <BarChart data={barData} layout="vertical" barSize={18}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1E1F27" horizontal={false} />
                 <XAxis type="number" tick={{ fill: "#3A3A4A", fontSize: 11 }} axisLine={false} tickLine={false} unit="%" />
@@ -133,7 +135,7 @@ export default function ForecastPage() {
         {/* Multi-horizon area */}
         <SectionCard title="Growth Trajectories" subtitle="3, 6, and 12-month horizons">
           <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
               <AreaChart data={horizonData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1E1F27" />
                 <XAxis dataKey="horizon" tick={{ fill: "#5A5A6E", fontSize: 12 }} axisLine={false} tickLine={false} />

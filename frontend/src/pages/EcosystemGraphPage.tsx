@@ -6,6 +6,7 @@ import TechnologyBadge from "../components/ui/TechnologyBadge";
 import { SectionCard, PageSpinner, PageError } from "../components/ui/PageShell";
 import ScoreBar from "../components/ui/ScoreBar";
 import { useGraphNetwork, useGraphInfluence, useGraphClusters } from "../hooks/useApi";
+import { useStaggerReveal } from "../animations/useScrollReveal";
 
 const ECOSYSTEM_COLORS: Record<string, string> = {
   "AI Ecosystem": "#A78BFA",
@@ -29,6 +30,7 @@ function ecosystemColor(label: string): string {
 }
 
 export default function EcosystemGraphPage() {
+  const staggerRef = useStaggerReveal<HTMLDivElement>(":scope > *");
   const network = useGraphNetwork();
   const influence = useGraphInfluence();
   const clusters = useGraphClusters();
@@ -128,7 +130,7 @@ export default function EcosystemGraphPage() {
   const selectedInfluence = influenceData.find((i) => i.technology_name === selectedNode);
 
   return (
-    <div className="space-y-6">
+    <div ref={staggerRef} className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Technology Ecosystem Graph</h1>
         <p className="text-sm text-dp-text-3">Interactive dependency and influence network</p>
@@ -222,7 +224,7 @@ export default function EcosystemGraphPage() {
       {/* Ecosystem legend */}
       <SectionCard title="Ecosystem Legend">
         <div className="flex flex-wrap gap-3">
-          {clusterData.map((c) => (
+          {[...new Map(clusterData.map((c) => [c.cluster_label, c])).values()].map((c) => (
             <div key={c.cluster_label} className="flex items-center gap-2">
               <span className="h-3 w-3 rounded-full" style={{ backgroundColor: ecosystemColor(c.cluster_label) }} />
               <span className="text-xs text-dp-text-2">{c.cluster_label}</span>

@@ -6,8 +6,10 @@ import TechnologyBadge from "../components/ui/TechnologyBadge";
 import ScoreBar from "../components/ui/ScoreBar";
 import { SectionCard, PageError } from "../components/ui/PageShell";
 import { useRecommend, useTechnologies } from "../hooks/useApi";
+import { useStaggerReveal } from "../animations/useScrollReveal";
 
 export default function RecommendPage() {
+  const staggerRef = useStaggerReveal<HTMLDivElement>(":scope > *");
   const [skills, setSkills] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState("");
   const recommend = useRecommend();
@@ -36,7 +38,7 @@ export default function RecommendPage() {
   const recommendations = recommend.data ?? [];
 
   return (
-    <div className="space-y-6">
+    <div ref={staggerRef} className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">AI Recommendations</h1>
         <p className="text-sm text-dp-text-3">Personalized technology recommendations based on your skill profile</p>

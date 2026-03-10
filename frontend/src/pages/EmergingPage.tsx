@@ -16,12 +16,14 @@ import { SectionCard, ChartTooltip, PageSpinner, PageError } from "../components
 import TrendIndicator from "../components/ui/TrendIndicator";
 import TechnologyBadge from "../components/ui/TechnologyBadge";
 import { useEmergingAnalytics, useMomentum } from "../hooks/useApi";
+import { useStaggerReveal } from "../animations/useScrollReveal";
 
 const COLORS = ["#F0B866", "#F59E0B", "#F87171", "#A78BFA", "#7C9BFF"];
 
 export default function EmergingPage() {
   const { data, isLoading, error } = useEmergingAnalytics();
   const momentum = useMomentum();
+  const staggerRef = useStaggerReveal<HTMLDivElement>(":scope > *");
 
   if (isLoading) return <PageSpinner />;
   if (error) return <PageError message={(error as Error).message} />;
@@ -40,7 +42,7 @@ export default function EmergingPage() {
     : 0;
 
   return (
-    <div className="space-y-6">
+    <div ref={staggerRef} className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Emerging Technologies</h1>
         <p className="text-sm text-dp-text-3">Technologies with sudden growth spikes and anomalous patterns</p>
@@ -64,7 +66,7 @@ export default function EmergingPage() {
       {/* Growth spike chart */}
       <SectionCard title="Growth Spike Analysis" subtitle="Spike scores across technologies">
         <div className="h-72">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="100%" minWidth={0}>
             <BarChart data={chartData} barGap={4}>
               <CartesianGrid strokeDasharray="3 3" stroke="#1E1F27" vertical={false} />
               <XAxis dataKey="name" tick={{ fill: "#5A5A6E", fontSize: 12 }} axisLine={false} tickLine={false} />

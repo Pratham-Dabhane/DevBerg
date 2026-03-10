@@ -18,6 +18,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 
 import MetricCard from "../components/ui/MetricCard";
+import { useStaggerReveal } from "../animations/useScrollReveal";
 import ScoreBar from "../components/ui/ScoreBar";
 import { SectionCard, ChartTooltip, PageSpinner, PageError } from "../components/ui/PageShell";
 import { useRepoHealth } from "../hooks/useApi";
@@ -36,6 +37,7 @@ export default function RepoHealthPage() {
   const [selected, setSelected] = useState<string | null>(null);
   const [sortCol, setSortCol] = useState<"health_score" | "maintainer_activity" | "risk_level">("health_score");
   const [sortAsc, setSortAsc] = useState(false);
+  const staggerRef = useStaggerReveal<HTMLDivElement>(":scope > *");
 
   if (isLoading) return <PageSpinner />;
   if (error) return <PageError message={(error as Error).message} />;
@@ -65,7 +67,7 @@ export default function RepoHealthPage() {
   }));
 
   return (
-    <div className="space-y-6">
+    <div ref={staggerRef} className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Repository Health</h1>
         <p className="text-sm text-dp-text-3">Comprehensive health diagnostics for tracked repositories</p>
@@ -84,7 +86,7 @@ export default function RepoHealthPage() {
       {/* Health chart */}
       <SectionCard title="Health Score Comparison">
         <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="100%" minWidth={0}>
             <BarChart data={chartData} barSize={24}>
               <CartesianGrid strokeDasharray="3 3" stroke="#1E1F27" vertical={false} />
               <XAxis dataKey="name" tick={{ fill: "#5A5A6E", fontSize: 11 }} axisLine={false} tickLine={false} />
@@ -194,7 +196,7 @@ export default function RepoHealthPage() {
 
               {/* Radar */}
               <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                   <RadarChart data={[
                     { axis: "Maintainer", value: selectedItem.maintainer_activity },
                     { axis: "Issue Speed", value: selectedItem.issue_resolution_speed },

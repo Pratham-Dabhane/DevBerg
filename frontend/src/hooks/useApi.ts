@@ -1,6 +1,10 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { api } from "../api/client";
 
+// ── Tracked technologies ──
+export const useTechnologies = () =>
+  useQuery({ queryKey: ["technologies"], queryFn: api.technologies, staleTime: 300_000 });
+
 // Phase 1-5
 export const useMetrics = () =>
   useQuery({ queryKey: ["metrics"], queryFn: api.metricsLatest, staleTime: 60_000 });

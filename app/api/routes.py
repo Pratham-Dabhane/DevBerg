@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import desc
 
 from app.database.session import get_db
-from app.models.models import Repository, StackOverflowStats, HackerNewsMention, TechMention, TechnologyMetrics, TechnologyPrediction
+from app.models.models import Repository, StackOverflowStats, HackerNewsMention, TechMention, TechnologyMetrics, TechnologyPrediction, TrackedTechnology
 from app.models.schemas import (
     RepositorySchema,
     StackOverflowStatsSchema,
@@ -20,6 +20,22 @@ from app.pipeline.metrics_pipeline import MetricsPipeline
 from app.ml.trend_engine import TrendEngine
 
 router = APIRouter(prefix="/api/v1", tags=["ecosystem"])
+
+
+# ── Tracked technologies ──────────────────────────────────────────
+
+@router.get("/technologies")
+def list_tracked_technologies(
+    db: Session = Depends(get_db),
+) -> list[dict]:
+    """Return all active tracked technologies with name and category."""
+    techs = (
+        db.query(TrackedTechnology)
+        .filter(TrackedTechnology.is_active.is_(True))
+        .order_by(TrackedTechnology.category, TrackedTechnology.name)
+        .all()
+    )
+    return [{"name": t.name, "category": t.category or "Other"} for t in techs]
 
 
 # ── GitHub endpoints ──────────────────────────────────────────────

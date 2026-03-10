@@ -14,31 +14,28 @@ import { Flame } from "lucide-react";
 
 import { SectionCard, ChartTooltip, PageSpinner, PageError } from "../components/ui/PageShell";
 import TrendIndicator from "../components/ui/TrendIndicator";
-import { useMomentum } from "../hooks/useApi";
+import { useMomentum, useTechnologies } from "../hooks/useApi";
+import { buildCategoryMap, extractCategories, CATEGORY_LABELS } from "../utils/categories";
 
 const COLORS = ["#6BE6C1", "#7C9BFF", "#A78BFA", "#F0B866", "#F87171"];
 
-const CATEGORY_MAP: Record<string, string> = {
-  FastAPI: "Backend",
-  LangChain: "AI",
-  Rust: "Languages",
-  Bun: "Languages",
-  Qdrant: "Database",
-};
-
 export default function MomentumPage() {
   const { data, isLoading, error } = useMomentum();
+  const { data: techList } = useTechnologies();
   const [minScore, setMinScore] = useState(0);
-  const [categoryFilter, setCategoryFilter] = useState("All");
+  const [categoryFilter, setCategoryFilter] = useState("all");
   const [sortCol, setSortCol] = useState<"momentum_score" | "stars_growth" | "contributors_growth">("momentum_score");
   const [sortAsc, setSortAsc] = useState(false);
+
+  const categoryMap = techList ? buildCategoryMap(techList) : {};
+  const categories = techList ? extractCategories(techList) : [];
 
   if (isLoading) return <PageSpinner />;
   if (error) return <PageError message={(error as Error).message} />;
 
   const items = (data ?? [])
     .filter((m) => m.momentum_score >= minScore)
-    .filter((m) => categoryFilter === "All" || CATEGORY_MAP[m.technology_name] === categoryFilter)
+    .filter((m) => categoryFilter === "all" || categoryMap[m.technology_name] === categoryFilter)
     .sort((a, b) => {
       const diff = a[sortCol] - b[sortCol];
       return sortAsc ? diff : -diff;
@@ -63,9 +60,9 @@ export default function MomentumPage() {
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <span className="text-xs text-dp-text-3">Category:</span>
-          {["All", "AI", "Backend", "Languages", "Database"].map((cat) => (
+          {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setCategoryFilter(cat)}
@@ -75,7 +72,7 @@ export default function MomentumPage() {
                   : "bg-dp-surface text-dp-text-3 hover:text-dp-text-2"
               }`}
             >
-              {cat}
+              {CATEGORY_LABELS[cat] || cat}
             </button>
           ))}
         </div>

@@ -20,7 +20,7 @@ from sklearn.linear_model import LinearRegression
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from app.models.models import Repository, StackOverflowStats, TechMention, TechnologyForecast
+from app.models.models import Repository, StackOverflowStats, TechMention, TechnologyForecast, TrackedTechnology
 
 logger = logging.getLogger(__name__)
 
@@ -224,10 +224,12 @@ class InvestmentForecaster:
 
     def run(self) -> list[TechnologyForecast]:
         """Run forecasts for all tracked technologies and persist results."""
-        from app.config import get_settings
-
-        settings = get_settings()
-        techs = [t["name"] for t in settings.tracked_technologies]
+        tracked = (
+            self.db.query(TrackedTechnology.name)
+            .filter(TrackedTechnology.is_active.is_(True))
+            .all()
+        )
+        techs = [r[0] for r in tracked]
 
         now = datetime.now(timezone.utc)
         orm_objects: list[TechnologyForecast] = []

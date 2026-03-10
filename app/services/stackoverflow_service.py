@@ -22,8 +22,18 @@ class StackOverflowService:
     def _get(self, url: str, params: dict) -> dict:
         with httpx.Client(timeout=30.0) as client:
             response = client.get(url, params=params)
+            # Handle SO rate limiting (backoff field)
+            data = response.json()
+            if data.get("backoff"):
+                wait = int(data["backoff"]) + 1
+                logger.warning("SO API backoff requested: %ds", wait)
+                time.sleep(wait)
+            if response.status_code == 502 or data.get("error_id") == 502:
+                logger.warning("SO API throttle — waiting 30s")
+                time.sleep(30)
+                return self._get(url, params)
             response.raise_for_status()
-            return response.json()
+            return data
 
     def _get_tag_info(self, tag: str) -> dict:
         """Fetch tag metadata including total question count."""
@@ -81,10 +91,13 @@ class StackOverflowService:
     def collect_all(self, technologies: list[dict[str, str]] | None = None) -> list[StackOverflowStats]:
         techs = technologies or self.settings.tracked_technologies
         results: list[StackOverflowStats] = []
-        for tech in techs:
+        for i, tech in enumerate(techs):
             try:
                 record = self.collect_tag_data(tech["name"], tech["so_tag"])
                 results.append(record)
+                # Throttle: SO free tier allows ~30 req/sec but throttles aggressively
+                if (i + 1) % 10 == 0:
+                    time.sleep(2)
             except httpx.HTTPStatusError as e:
                 logger.error("StackOverflow API error for %s: %s", tech["name"], e)
             except Exception as e:

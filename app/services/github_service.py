@@ -1,4 +1,5 @@
 import logging
+import time
 from datetime import datetime, timezone
 
 import httpx
@@ -92,10 +93,13 @@ class GitHubService:
     def collect_all(self, technologies: list[dict[str, str]] | None = None) -> list[Repository]:
         techs = technologies or self.settings.tracked_technologies
         results: list[Repository] = []
-        for tech in techs:
+        for i, tech in enumerate(techs):
             try:
                 record = self.collect_repository_data(tech["name"], tech["github_repo"])
                 results.append(record)
+                # Throttle to stay under GitHub rate limits (5000/hr with token)
+                if (i + 1) % 15 == 0:
+                    time.sleep(2)
             except httpx.HTTPStatusError as e:
                 logger.error("GitHub API error for %s: %s", tech["name"], e)
             except Exception as e:

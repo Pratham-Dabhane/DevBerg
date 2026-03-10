@@ -22,8 +22,7 @@ from datetime import datetime, timezone
 import pandas as pd
 from sqlalchemy.orm import Session
 
-from app.config import get_settings
-from app.models.models import Repository, TechnologyMetrics, RepositoryHealth
+from app.models.models import Repository, TechnologyMetrics, RepositoryHealth, TrackedTechnology
 
 logger = logging.getLogger(__name__)
 
@@ -68,8 +67,12 @@ class RepoHealthAnalyzer:
 
     def _build_signal_frame(self) -> pd.DataFrame:
         """Build a DataFrame of raw signals per repository from collected data."""
-        settings = get_settings()
-        tech_repos = {t["name"]: t["github_repo"] for t in settings.tracked_technologies}
+        tracked = (
+            self.db.query(TrackedTechnology)
+            .filter(TrackedTechnology.is_active.is_(True))
+            .all()
+        )
+        tech_repos = {t.name: t.github_repo for t in tracked}
 
         records: list[dict] = []
 

@@ -16,7 +16,17 @@ const ECOSYSTEM_COLORS: Record<string, string> = {
   "Database Ecosystem": "#F87171",
   "Data Ecosystem": "#F472B6",
   "Mobile Ecosystem": "#2DD4BF",
+  "Runtime Ecosystem": "#FBBF24",
 };
+
+const FALLBACK_COLORS = ["#A78BFA", "#6BE6C1", "#F0B866", "#7C9BFF", "#34D399", "#F87171", "#F472B6", "#2DD4BF", "#FBBF24", "#818CF8"];
+
+function ecosystemColor(label: string): string {
+  if (ECOSYSTEM_COLORS[label]) return ECOSYSTEM_COLORS[label];
+  let hash = 0;
+  for (let i = 0; i < label.length; i++) hash = ((hash << 5) - hash + label.charCodeAt(i)) | 0;
+  return FALLBACK_COLORS[Math.abs(hash) % FALLBACK_COLORS.length];
+}
 
 export default function EcosystemGraphPage() {
   const network = useGraphNetwork();
@@ -54,7 +64,7 @@ export default function EcosystemGraphPage() {
             selector: "node",
             style: {
               label: "data(label)",
-              "background-color": (ele: any) => ECOSYSTEM_COLORS[ele.data("cluster_label")] ?? "#5A5A6E",
+              "background-color": (ele: any) => ecosystemColor(ele.data("cluster_label")),
               "border-width": 2,
               "border-color": "#1E1F27",
               color: "#F5F5F7",
@@ -212,10 +222,10 @@ export default function EcosystemGraphPage() {
       {/* Ecosystem legend */}
       <SectionCard title="Ecosystem Legend">
         <div className="flex flex-wrap gap-3">
-          {Object.entries(ECOSYSTEM_COLORS).map(([eco, color]) => (
-            <div key={eco} className="flex items-center gap-2">
-              <span className="h-3 w-3 rounded-full" style={{ backgroundColor: color }} />
-              <span className="text-xs text-dp-text-2 capitalize">{eco.replace("_", " / ")}</span>
+          {clusterData.map((c) => (
+            <div key={c.cluster_label} className="flex items-center gap-2">
+              <span className="h-3 w-3 rounded-full" style={{ backgroundColor: ecosystemColor(c.cluster_label) }} />
+              <span className="text-xs text-dp-text-2">{c.cluster_label}</span>
             </div>
           ))}
         </div>

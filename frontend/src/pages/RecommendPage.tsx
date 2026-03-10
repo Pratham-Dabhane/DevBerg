@@ -5,18 +5,15 @@ import { Sparkles, X, Plus } from "lucide-react";
 import TechnologyBadge from "../components/ui/TechnologyBadge";
 import ScoreBar from "../components/ui/ScoreBar";
 import { SectionCard, PageError } from "../components/ui/PageShell";
-import { useRecommend } from "../hooks/useApi";
-
-const SKILL_SUGGESTIONS = [
-  "Python", "FastAPI", "Docker", "React", "TypeScript", "Rust", "PostgreSQL",
-  "LangChain", "TensorFlow", "PyTorch", "Node.js", "Go", "Kubernetes",
-  "Redis", "MongoDB", "GraphQL", "Next.js", "Tailwind", "Vue.js", "Django",
-];
+import { useRecommend, useTechnologies } from "../hooks/useApi";
 
 export default function RecommendPage() {
   const [skills, setSkills] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState("");
   const recommend = useRecommend();
+  const { data: techList } = useTechnologies();
+
+  const skillSuggestions = (techList ?? []).map((t) => t.name);
 
   function addSkill(skill: string) {
     const trimmed = skill.trim();
@@ -93,7 +90,7 @@ export default function RecommendPage() {
           <div>
             <p className="text-xs text-dp-text-3 mb-2">Quick add:</p>
             <div className="flex flex-wrap gap-1.5">
-              {SKILL_SUGGESTIONS.filter((s) => !skills.includes(s)).slice(0, 12).map((s) => (
+              {skillSuggestions.filter((s) => !skills.includes(s)).slice(0, 12).map((s) => (
                 <button
                   key={s}
                   onClick={() => addSkill(s)}

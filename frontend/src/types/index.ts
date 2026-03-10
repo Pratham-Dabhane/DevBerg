@@ -56,7 +56,7 @@ export interface TrendInsight {
   data: Record<string, number | boolean | string>;
 }
 
-export type TechCategory = "all" | "ai" | "languages" | "databases" | "devops";
+export type TechCategory = "all" | "ai" | "backend" | "frontend" | "systems" | "database" | "devops" | "mobile" | "runtime" | string;
 
 // ── Phase 6-9 types ──
 

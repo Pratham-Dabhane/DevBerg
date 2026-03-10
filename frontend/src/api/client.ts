@@ -35,6 +35,9 @@ async function post<T>(url: string, body: unknown): Promise<T> {
 }
 
 export const api = {
+  // ── Master technology list ──
+  technologies: () => get<{ name: string; category: string }[]>("/api/v1/technologies"),
+
   // Phase 1-5 endpoints
   metricsLatest: () => get<TechnologyMetrics[]>("/api/v1/metrics/latest"),
   predictions: () => get<TechnologyPrediction[]>("/api/v1/predictions/latest"),

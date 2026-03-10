@@ -15,7 +15,7 @@ from app.api.analytics_routes import router as analytics_router
 from app.api.repo_health_routes import router as repo_health_router
 from app.graph.graph_api import router as graph_router
 from app.api.ai_routes import router as ai_router
-from app.services.collector import run_collection, run_pipeline, run_trend_engine, run_analytics, run_repo_health, run_graph_analysis, run_investment_forecasts
+from app.services.collector import run_collection, run_pipeline, run_trend_engine, run_analytics, run_repo_health, run_graph_analysis, run_investment_forecasts, run_discovery, seed_registry
 
 logging.basicConfig(
     level=logging.INFO,
@@ -31,6 +31,9 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     # Startup
     Base.metadata.create_all(bind=engine)
     logger.info("Database tables created.")
+
+    # Seed the technology registry on first run
+    seed_registry()
 
     settings = get_settings()
     scheduler.add_job(
@@ -82,6 +85,13 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         id="investment_forecasts",
         replace_existing=True,
     )
+    scheduler.add_job(
+        run_discovery,
+        "interval",
+        hours=48,
+        id="tech_discovery",
+        replace_existing=True,
+    )
     scheduler.start()
     logger.info(
         "Scheduler started — collecting every %d hours, pipeline & analytics daily.",
@@ -96,8 +106,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
 
 app = FastAPI(
-    title="DevBerg — Developer Ecosystem Tracker",
-    description="Collects and serves developer ecosystem data from GitHub, StackOverflow, and HackerNews.",
+    title="DevPulse AI — Developer Ecosystem Tracker",
+    description="Dynamically tracks 60+ technologies across AI, backend, frontend, systems, databases, DevOps, mobile, and tooling ecosystems.",
     version="1.0.0",
     lifespan=lifespan,
 )

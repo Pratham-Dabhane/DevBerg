@@ -89,9 +89,10 @@ class GitHubService:
         logger.info("Stored GitHub data for %s: %d stars", technology, record.stars)
         return record
 
-    def collect_all(self) -> list[Repository]:
+    def collect_all(self, technologies: list[dict[str, str]] | None = None) -> list[Repository]:
+        techs = technologies or self.settings.tracked_technologies
         results: list[Repository] = []
-        for tech in self.settings.tracked_technologies:
+        for tech in techs:
             try:
                 record = self.collect_repository_data(tech["name"], tech["github_repo"])
                 results.append(record)

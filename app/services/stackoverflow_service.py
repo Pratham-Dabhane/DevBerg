@@ -78,9 +78,10 @@ class StackOverflowService:
         )
         return record
 
-    def collect_all(self) -> list[StackOverflowStats]:
+    def collect_all(self, technologies: list[dict[str, str]] | None = None) -> list[StackOverflowStats]:
+        techs = technologies or self.settings.tracked_technologies
         results: list[StackOverflowStats] = []
-        for tech in self.settings.tracked_technologies:
+        for tech in techs:
             try:
                 record = self.collect_tag_data(tech["name"], tech["so_tag"])
                 results.append(record)

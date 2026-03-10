@@ -8,13 +8,7 @@ class Settings(BaseSettings):
     stackoverflow_api_key: str = ""
     collection_interval_hours: int = 12
 
-    tracked_technologies: list[dict[str, str]] = [
-        {"name": "FastAPI", "github_repo": "fastapi/fastapi", "so_tag": "fastapi"},
-        {"name": "LangChain", "github_repo": "langchain-ai/langchain", "so_tag": "langchain"},
-        {"name": "Rust", "github_repo": "rust-lang/rust", "so_tag": "rust"},
-        {"name": "Bun", "github_repo": "oven-sh/bun", "so_tag": "bun"},
-        {"name": "Qdrant", "github_repo": "qdrant/qdrant", "so_tag": "qdrant"},
-    ]
+    tracked_technologies: list[dict[str, str]] = []  # populated from DB at runtime
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 

@@ -26,10 +26,23 @@ DEPENDENCY_EDGES: list[tuple[str, str, str]] = [
     ("LangChain", "Qdrant", "dependency"),
     ("LangChain", "Hugging Face", "integration"),
     ("LangChain", "FastAPI", "integration"),
+    ("LlamaIndex", "OpenAI", "dependency"),
+    ("LlamaIndex", "LangChain", "integration"),
     ("OpenAI", "Tiktoken", "dependency"),
+    ("Ollama", "LangChain", "integration"),
     ("ChromaDB", "DuckDB", "dependency"),
     ("Hugging Face", "PyTorch", "dependency"),
+    ("Hugging Face", "TensorFlow", "integration"),
     ("PyTorch", "CUDA", "dependency"),
+    ("TensorFlow", "CUDA", "dependency"),
+    ("TensorFlow", "Keras", "integration"),
+    ("scikit-learn", "PostgreSQL", "ecosystem"),
+    ("MLflow", "PyTorch", "integration"),
+    ("MLflow", "scikit-learn", "integration"),
+    ("Stable Diffusion", "PyTorch", "dependency"),
+    ("Weaviate", "Go", "dependency"),
+    ("Milvus", "Go", "dependency"),
+    ("Qdrant", "Rust", "dependency"),
 
     # Python backend ecosystem
     ("FastAPI", "Pydantic", "dependency"),
@@ -40,85 +53,135 @@ DEPENDENCY_EDGES: list[tuple[str, str, str]] = [
     ("Django", "PostgreSQL", "ecosystem"),
     ("Flask", "Jinja2", "dependency"),
     ("Flask", "Werkzeug", "dependency"),
+    ("Flask", "SQLAlchemy", "integration"),
+
+    # Node.js backend ecosystem
+    ("Express.js", "Node.js", "dependency"),
+    ("NestJS", "Express.js", "dependency"),
+    ("NestJS", "Node.js", "dependency"),
+    ("Hono", "Bun", "integration"),
+    ("Hono", "Node.js", "integration"),
+
+    # JVM ecosystem
+    ("Spring Boot", "Kotlin", "integration"),
+    ("Spring Boot", "PostgreSQL", "ecosystem"),
+
+    # Go ecosystem
+    ("Gin", "Go", "dependency"),
+
+    # Other backend
+    ("Ruby on Rails", "PostgreSQL", "ecosystem"),
+    ("Laravel", "Redis", "integration"),
+    ("ASP.NET Core", "PostgreSQL", "ecosystem"),
 
     # Rust ecosystem
     ("Rust", "Tokio", "dependency"),
     ("Rust", "Serde", "dependency"),
     ("Rust", "Actix", "dependency"),
-    ("Rust", "Qdrant", "ecosystem"),
     ("Tokio", "Hyper", "dependency"),
 
     # Frontend / JS ecosystem
     ("React", "Next.js", "integration"),
     ("React", "Redux", "integration"),
     ("React", "Vite", "ecosystem"),
+    ("React", "Remix", "integration"),
     ("Vue", "Nuxt", "integration"),
     ("Vue", "Vite", "ecosystem"),
+    ("Svelte", "Vite", "ecosystem"),
+    ("SolidJS", "Vite", "ecosystem"),
+    ("Astro", "Vite", "dependency"),
+    ("Astro", "React", "integration"),
     ("Bun", "Elysia", "integration"),
     ("Bun", "Vite", "ecosystem"),
     ("Next.js", "Vercel", "ecosystem"),
+    ("htmx", "Django", "integration"),
+    ("htmx", "FastAPI", "integration"),
+    ("Tailwind CSS", "Vite", "ecosystem"),
+    ("Tailwind CSS", "Next.js", "integration"),
+    ("Angular", "TypeScript", "dependency"),
+    ("Angular", "Node.js", "ecosystem"),
+
+    # Database / ORM ecosystem
+    ("Supabase", "PostgreSQL", "dependency"),
+    ("Prisma", "PostgreSQL", "ecosystem"),
+    ("Prisma", "Node.js", "dependency"),
+    ("Drizzle ORM", "PostgreSQL", "ecosystem"),
+    ("Drizzle ORM", "Node.js", "dependency"),
+    ("SQLAlchemy", "PostgreSQL", "ecosystem"),
+    ("Elasticsearch", "Kubernetes", "ecosystem"),
 
     # DevOps / Infra ecosystem
     ("Docker", "Kubernetes", "ecosystem"),
     ("Kubernetes", "Helm", "dependency"),
+    ("ArgoCD", "Kubernetes", "dependency"),
+    ("Grafana", "Prometheus", "integration"),
+    ("Prometheus", "Kubernetes", "integration"),
+    ("Ansible", "Docker", "integration"),
     ("Terraform", "AWS", "ecosystem"),
     ("Terraform", "Pulumi", "ecosystem"),
     ("GitHub Actions", "Docker", "integration"),
+
+    # Runtime / Tooling ecosystem
+    ("Deno", "Rust", "dependency"),
+    ("Tauri", "Rust", "dependency"),
+    ("Electron", "Node.js", "dependency"),
+    ("Electron", "React", "integration"),
+
+    # Mobile ecosystem
+    ("React Native", "React", "dependency"),
+    ("React Native", "Node.js", "dependency"),
 ]
 
 # Ecosystem labels assigned to seed nodes.  Nodes not listed here inherit
 # a label from their most-connected neighbour during clustering.
 ECOSYSTEM_SEEDS: dict[str, str] = {
-    "LangChain": "AI",
-    "OpenAI": "AI",
-    "ChromaDB": "AI",
-    "Hugging Face": "AI",
-    "PyTorch": "AI",
-    "CUDA": "AI",
-    "Tiktoken": "AI",
-    "Qdrant": "AI",
-    "FastAPI": "Backend",
-    "Pydantic": "Backend",
-    "Uvicorn": "Backend",
-    "Starlette": "Backend",
-    "SQLAlchemy": "Backend",
-    "Django": "Backend",
-    "Celery": "Backend",
-    "PostgreSQL": "Backend",
-    "Flask": "Backend",
-    "Jinja2": "Backend",
-    "Werkzeug": "Backend",
-    "Rust": "Systems",
-    "Tokio": "Systems",
-    "Serde": "Systems",
-    "Actix": "Systems",
-    "Hyper": "Systems",
-    "React": "Frontend",
-    "Next.js": "Frontend",
-    "Redux": "Frontend",
-    "Vue": "Frontend",
-    "Nuxt": "Frontend",
-    "Vite": "Frontend",
-    "Bun": "Frontend",
-    "Elysia": "Frontend",
-    "Vercel": "Frontend",
-    "Docker": "DevOps",
-    "Kubernetes": "DevOps",
-    "Helm": "DevOps",
-    "Terraform": "DevOps",
-    "AWS": "DevOps",
-    "Pulumi": "DevOps",
-    "GitHub Actions": "DevOps",
-    "DuckDB": "AI",
+    # AI / ML
+    "LangChain": "AI", "OpenAI": "AI", "ChromaDB": "AI", "Hugging Face": "AI",
+    "PyTorch": "AI", "CUDA": "AI", "Tiktoken": "AI", "Qdrant": "AI",
+    "TensorFlow": "AI", "Keras": "AI", "scikit-learn": "AI", "MLflow": "AI",
+    "Stable Diffusion": "AI", "Ollama": "AI", "LlamaIndex": "AI",
+    "Weaviate": "AI", "Milvus": "AI", "DuckDB": "AI", "LangGraph": "AI",
+    # Backend
+    "FastAPI": "Backend", "Pydantic": "Backend", "Uvicorn": "Backend",
+    "Starlette": "Backend", "SQLAlchemy": "Backend", "Django": "Backend",
+    "Celery": "Backend", "PostgreSQL": "Backend", "Flask": "Backend",
+    "Jinja2": "Backend", "Werkzeug": "Backend", "Express.js": "Backend",
+    "NestJS": "Backend", "Spring Boot": "Backend", "Gin": "Backend",
+    "Ruby on Rails": "Backend", "Laravel": "Backend", "ASP.NET Core": "Backend",
+    "Hono": "Backend",
+    # Frontend
+    "React": "Frontend", "Next.js": "Frontend", "Redux": "Frontend",
+    "Vue": "Frontend", "Nuxt": "Frontend", "Vite": "Frontend",
+    "Bun": "Frontend", "Elysia": "Frontend", "Vercel": "Frontend",
+    "Angular": "Frontend", "Svelte": "Frontend", "Remix": "Frontend",
+    "Astro": "Frontend", "SolidJS": "Frontend", "htmx": "Frontend",
+    "Tailwind CSS": "Frontend",
+    # Systems
+    "Rust": "Systems", "Tokio": "Systems", "Serde": "Systems",
+    "Actix": "Systems", "Hyper": "Systems", "Go": "Systems", "Zig": "Systems",
+    "Kotlin": "Systems", "TypeScript": "Systems",
+    # Database
+    "MongoDB": "Database", "Redis": "Database", "Elasticsearch": "Database",
+    "Supabase": "Database", "Prisma": "Database", "Drizzle ORM": "Database",
+    # DevOps
+    "Docker": "DevOps", "Kubernetes": "DevOps", "Helm": "DevOps",
+    "Terraform": "DevOps", "AWS": "DevOps", "Pulumi": "DevOps",
+    "GitHub Actions": "DevOps", "Ansible": "DevOps", "ArgoCD": "DevOps",
+    "Grafana": "DevOps", "Prometheus": "DevOps",
+    # Mobile
+    "Flutter": "Mobile", "React Native": "Mobile",
+    # Runtime
+    "Deno": "Runtime", "Node.js": "Runtime", "Tauri": "Runtime",
+    "Electron": "Runtime",
 }
 
-# Tracked technologies (mirrors config.py names) get a special flag so the
-# analyzer can weight them more meaningfully against the broader graph.
-TRACKED_TECHNOLOGIES = {"FastAPI", "LangChain", "Rust", "Bun", "Qdrant"}
 
-
-def build_graph() -> nx.DiGraph:
+def build_graph(tracked_technologies: set[str] | None = None) -> nx.DiGraph:
     """Construct the technology dependency graph.
+
+    Args:
+        tracked_technologies: Optional set of technology names from the DB.
+            If *None*, all nodes present in ECOSYSTEM_SEEDS are considered tracked.
 
     Returns a NetworkX DiGraph with node attributes:
         - ecosystem: str  (seed label or "Unknown")
@@ -131,10 +194,14 @@ def build_graph() -> nx.DiGraph:
     for source, target, rel in DEPENDENCY_EDGES:
         G.add_edge(source, target, relationship=rel)
 
+    # If no explicit set provided, treat every seeded node as tracked
+    if tracked_technologies is None:
+        tracked_technologies = set(ECOSYSTEM_SEEDS.keys())
+
     # Annotate nodes
     for node in G.nodes:
         G.nodes[node]["ecosystem"] = ECOSYSTEM_SEEDS.get(node, "Unknown")
-        G.nodes[node]["tracked"] = node in TRACKED_TECHNOLOGIES
+        G.nodes[node]["tracked"] = node in tracked_technologies
 
     logger.info(
         "Built dependency graph: %d nodes, %d edges.",

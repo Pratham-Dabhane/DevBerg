@@ -13,7 +13,7 @@ import networkx as nx
 from sqlalchemy.orm import Session
 
 from app.graph.dependency_graph import build_graph
-from app.models.models import TechnologyGraphMetrics
+from app.models.models import TechnologyGraphMetrics, TrackedTechnology
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +62,14 @@ class GraphAnalyzer:
 
     def _analyse_graph(self) -> tuple[nx.DiGraph, dict[str, int], dict[int, str]]:
         """Build graph, compute all metrics, return (graph, partition, labels)."""
-        G = build_graph()
+        # Pull tracked tech names from DB so the graph knows what's active
+        tracked = {
+            t.name
+            for t in self.db.query(TrackedTechnology.name)
+            .filter(TrackedTechnology.is_active.is_(True))
+            .all()
+        }
+        G = build_graph(tracked_technologies=tracked)
 
         # Centrality metrics (computed on the directed graph)
         degree = nx.degree_centrality(G)

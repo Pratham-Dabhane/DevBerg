@@ -1,10 +1,27 @@
-from sqlalchemy import Column, Integer, String, DateTime, Float, BigInteger
+from sqlalchemy import Column, Integer, String, DateTime, Float, BigInteger, Boolean
 from sqlalchemy.orm import DeclarativeBase
 from datetime import datetime, timezone
 
 
 class Base(DeclarativeBase):
     pass
+
+
+class TrackedTechnology(Base):
+    """Dynamic registry of technologies the platform tracks."""
+    __tablename__ = "tracked_technologies"
+
+    id: int = Column(Integer, primary_key=True, autoincrement=True)
+    name: str = Column(String(100), unique=True, nullable=False, index=True)
+    github_repo: str = Column(String(255), nullable=False)
+    so_tag: str = Column(String(100), nullable=False)
+    category: str = Column(String(50), nullable=False, default="General")
+    description: str = Column(String(500), nullable=True)
+    is_active: bool = Column(Boolean, nullable=False, default=True)
+    auto_discovered: bool = Column(Boolean, nullable=False, default=False)
+    added_at: datetime = Column(
+        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc)
+    )
 
 
 class Repository(Base):

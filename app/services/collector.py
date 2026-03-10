@@ -23,14 +23,18 @@ def run_collection() -> None:
     logger.info("Starting scheduled data collection...")
     db: Session = SessionLocal()
     try:
+        from app.services.tech_registry import get_active_technologies
+        technologies = get_active_technologies(db)
+        logger.info("Collecting data for %d tracked technologies.", len(technologies))
+
         github_svc = GitHubService(db)
-        github_svc.collect_all()
+        github_svc.collect_all(technologies)
 
         so_svc = StackOverflowService(db)
-        so_svc.collect_all()
+        so_svc.collect_all(technologies)
 
         hn_svc = HackerNewsService(db)
-        hn_svc.collect_all()
+        hn_svc.collect_all(technologies)
 
         logger.info("Scheduled data collection completed successfully.")
     except Exception as e:
@@ -117,5 +121,32 @@ def run_investment_forecasts() -> None:
         logger.info("Scheduled investment forecasts completed successfully.")
     except Exception as e:
         logger.error("Investment forecasts failed: %s", e)
+    finally:
+        db.close()
+
+
+def run_discovery() -> None:
+    """Execute the technology discovery service to find new trending techs."""
+    logger.info("Starting scheduled tech discovery...")
+    db: Session = SessionLocal()
+    try:
+        from app.services.discovery_service import DiscoveryService
+        svc = DiscoveryService(db)
+        added = svc.run()
+        logger.info("Tech discovery completed — %d new technologies.", added)
+    except Exception as e:
+        logger.error("Tech discovery failed: %s", e)
+    finally:
+        db.close()
+
+
+def seed_registry() -> None:
+    """Seed the technology registry on first run."""
+    db: Session = SessionLocal()
+    try:
+        from app.services.tech_registry import seed_technologies
+        seed_technologies(db)
+    except Exception as e:
+        logger.error("Technology seeding failed: %s", e)
     finally:
         db.close()

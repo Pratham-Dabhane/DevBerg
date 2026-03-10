@@ -82,9 +82,10 @@ class HackerNewsService:
         )
         return mentions
 
-    def collect_all(self) -> list[HackerNewsMention]:
+    def collect_all(self, technologies: list[dict[str, str]] | None = None) -> list[HackerNewsMention]:
+        techs = technologies or self.settings.tracked_technologies
         all_mentions: list[HackerNewsMention] = []
-        for tech in self.settings.tracked_technologies:
+        for tech in techs:
             try:
                 mentions = self.collect_mentions(tech["name"])
                 all_mentions.extend(mentions)
